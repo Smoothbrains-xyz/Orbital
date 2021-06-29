@@ -56,24 +56,6 @@ client.on("interaction", interaction => {
     case "ping":
       ping(interaction);
       break;
-  }
-
-  switch(interaction.commandName) {
-    case "apod":
-      apod(interaction);
-      break;
-    case "iss":
-      iss(interaction);
-      break;
-    case "help":
-      help(interaction);
-      break;
-    case "ping":
-      ping(interaction);
-      break;
-    case "epic":
-      epic(interaction.options.first().name /* Subcommand name */, interaction);
-      break;
   } // End interaction command name switch
 });
 
@@ -159,7 +141,7 @@ async function ping(interaction) {
 
 async function epic (interaction) {
   // If "enhanced" is false
-  if (!interaction.options.first().options.first()) {
+  if (!interaction.options.first().options.first().value) {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -184,7 +166,7 @@ async function epic (interaction) {
           });
       });
   // If "enhanced" is true
-  } else if (interaction.options.first().options.first()) {
+  } else if (interaction.options.first().options.first()v.alue) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
