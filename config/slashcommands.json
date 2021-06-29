@@ -1,4 +1,6 @@
-{
-  "name": "apod",
-  "description": "NASA's Astronomy Picture of the Day"
-}
+[
+  {
+    "name": "apod",
+    "description": "NASA's Astronomy Picture of the Day"
+  }
+]
