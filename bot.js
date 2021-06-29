@@ -11,6 +11,9 @@ const axios = require('axios');
 const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
 
+const nasaApiKey = process.env.NASA_API_KEY;
+const token = process.env.TOKEN;
+
 client.once('ready', () => {
   // Register slash commands globally
   client.application.commands.set(slashCommands);
@@ -37,7 +40,6 @@ client.on("interaction", interaction => {
 });
 
 async function apod(interaction) {
-  const nasaApiKey = process.env.NASA_API_KEY;
   axios.get(`${urls.apod}${nasaApiKey}`)
     .then(response => {
       data = response.data;
@@ -97,4 +99,4 @@ async function epic (action, interaction) {
   }
 }
 
-client.login(process.env.TOKEN);
+client.login(token);
