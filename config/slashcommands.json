@@ -22,28 +22,12 @@
     {
       "type": 1,
       "name": "enhanced",
-      "description": "Returns enhanced images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
-      "options": [
-        {
-          "type": 5,
-          "name": "newest",
-          "description": "If true, it shows the most recent image. Otherwise, it shows a random image.",
-          "required": false
-        }
-      ]
+      "description": "Returns enhanced images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument"
     },
     {
       "type": 1,
       "name": "natural",
-      "description": "Returns natural images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
-      "options": [
-        {
-          "type": 5,
-          "name": "newest",
-          "description": "If true, it shows the most recent image. Otherwise, it shows a random image.",
-          "required": false
-        }
-      ]
+      "description": "Returns natural images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument"
     }
   ]
 }
