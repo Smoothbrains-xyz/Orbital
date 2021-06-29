@@ -10,13 +10,7 @@ const axios = require('axios');
 
 const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
-const embedInfo = {
-  color: "ffffff",
-  footer: [
-    `${client.user.tag}`,
-    `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`
-  ]
-}
+let embedInfo;
 
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
@@ -27,6 +21,15 @@ client.once('ready', () => {
 
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
+
+  // Set embed info
+  embedInfo = {
+    color: "ffffff",
+    footer: [
+      `${client.user.tag}`,
+      `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`
+    ]
+  }
 });
 
 client.on("interaction", interaction => {
