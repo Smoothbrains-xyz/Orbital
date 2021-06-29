@@ -1,10 +1,5 @@
-const Discord = require('discord.js');
-const client = new Discord.Client();
+const { ShardingManager } = require('discord.js');
+const manager = new ShardingManager('./bot.js', { token: process.env.TOKEN });
 
-const axios = require('axios');
-
-client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.login(process.env.TOKEN);
+manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
+manager.spawn();
