@@ -30,6 +30,9 @@ client.on("interaction", interaction => {
     case "iss":
       iss(interaction);
       break;
+    case "epic":
+      epic(interaction.options[0].name /* Subcommand name */, interaction);
+      break;
   } // End interaction command name switch
 });
 
@@ -75,6 +78,14 @@ async function iss(interaction) {
         });
     })
     .catch(console.error);
+}
+
+async function epic (action, interaction) {
+  if (action === "natural") {
+    console.log(interaction);
+  } else if (action === "enhanced") {
+    console.log(interaction);
+  }
 }
 
 client.login(process.env.TOKEN);
