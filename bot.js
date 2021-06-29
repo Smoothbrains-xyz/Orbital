@@ -52,9 +52,7 @@ async function apod(interaction) {
         .setColor('ffffff')
         .setTimestamp();
 
-      interaction.reply({ embeds: [apodEmbed]})
-        .then(console.log)
-	      .catch(console.error);
+      interaction.reply({ embeds: [apodEmbed]});
     })
     .catch(console.error);
 }
