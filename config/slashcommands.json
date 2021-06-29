@@ -1,34 +1,40 @@
 [
   {
-    "name": "apod",
-    "description": "NASA's Astronomy Picture of the Day"
+    "name": "space",
+    "description": "Commands regarding astronomy",
+    "options": [
+      {
+        "type": 1,
+        "name": "apod",
+        "description": "NASA's Astronomy Picture of the Day"
+      },
+      {
+        "type": 1,
+        "name": "iss",
+        "description": "Displays the current location of the International Space Station as well as its inhabitants"
+      },
+      {
+        "type": 1,
+        "name": "epic",
+        "description": "Returns an image collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
+        "options": [
+          {
+            "type": 5,
+            "name": "enhanced",
+            "description": "Determines whether to pull and enhanced or raw image",
+            "required": true
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "help",
     "description": "Help Command and full command list"
   },
   {
+    "type": 1,
     "name": "ping",
     "description": "Show bot ping"
-  },
-  {
-    "name": "iss",
-    "description": "Displays the current location of the International Space Station as well as its inhabitants"
-  },
-  {
-  "name": "epic",
-  "description": "Returns images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
-  "options": [
-    {
-      "type": 1,
-      "name": "enhanced",
-      "description": "Returns enhanced images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument"
-    },
-    {
-      "type": 1,
-      "name": "natural",
-      "description": "Returns natural images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument"
-    }
-  ]
-}
+  }
 ]

@@ -12,6 +12,9 @@ const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
 let embedInfo;
 
+const nasaApiKey = process.env.NASA_API_KEY;
+const token = process.env.TOKEN;
+
 client.once('ready', () => {
   // Register slash commands globally
   client.application.commands.set(slashCommands);
@@ -42,12 +45,10 @@ client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
   if (!interaction.isCommand()) return;
 
+  // Switch between categories and uncategorized commands
   switch(interaction.commandName) {
-    case "apod":
-      apod(interaction);
-      break;
-    case "iss":
-      iss(interaction);
+    case "space":
+      space(interaction);
       break;
     case "help":
       help(interaction);
@@ -58,8 +59,21 @@ client.on("interaction", interaction => {
   } // End interaction command name switch
 });
 
+async function space(interaction) {
+  switch(interaction.options.first().name) {
+    case "apod":
+      apod(interaction);
+      break;
+    case "iss":
+      iss(interaction);
+      break;
+    case "epic":
+      epic(interaction);
+      break;
+  }
+}
+
 async function apod(interaction) {
-  const nasaApiKey = process.env.NASA_API_KEY;
   axios.get(`${urls.apod}${nasaApiKey}`)
     .then(response => {
       data = response.data;
@@ -89,10 +103,7 @@ async function iss(interaction) {
         .setTitle("The current location of the ISS!")
         .setURL('https://spotthestation.nasa.gov/tracking_map.cfm')
         .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
-<<<<<<< HEAD
-=======
         .setFooter(embedInfo.footer[0], embedInfo.footer[1])
->>>>>>> a4f6409ad97e195ae4b795f7c5f5c937221d0da1
         .setColor("ffffff")
         .setFooter(`Bot ID: ${client.user.id}`)
         .setTimestamp();
@@ -129,11 +140,9 @@ async function ping(interaction) {
   interaction.reply({ embeds: [pingEmbed] });
 }
 
-<<<<<<< HEAD
-client.login(process.env.TOKEN);
-=======
-async function epic (action, interaction) {
-  if (action === "natural") {
+async function epic (interaction) {
+  // If "enhanced" is false
+  if (!interaction.options.first().options.first().value) {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -157,7 +166,8 @@ async function epic (action, interaction) {
             interaction.reply({ embeds: [epicNaturalEmbed] });
           });
       });
-  } else if (action === "enhanced") {
+  // If "enhanced" is true
+  } else if (interaction.options.first().options.first().value) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -185,4 +195,3 @@ async function epic (action, interaction) {
 }
 
 client.login(token);
->>>>>>> a4f6409ad97e195ae4b795f7c5f5c937221d0da1
