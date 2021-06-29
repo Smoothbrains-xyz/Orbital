@@ -82,7 +82,7 @@ async function iss(interaction) {
 
 async function epic (action, interaction) {
   if (action === "natural") {
-    axios.get(`${urls.epic_natural_date}`)
+    axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
         randomDate = data[Math.floor(Math.random() * data.length)].date;
