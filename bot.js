@@ -30,6 +30,15 @@ client.once('ready', () => {
       `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`
     ]
   }
+
+  // Set presence
+  client.user.setPresence({ activities: [
+    {
+      name: "the night sky",
+      type: "WATCHING",
+      url: "https://github.com/ADawesomeguy/nasa-bot"
+    }
+  ]});
 });
 
 client.on("interaction", interaction => {
