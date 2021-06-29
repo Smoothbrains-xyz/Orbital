@@ -35,17 +35,19 @@ async function apod(interaction) {
   axios.get(`${urls.apod}${nasaApiKey}`)
     .then(response => {
       const apodEmbed = new Discord.MessageEmbed()
-        .setAuthor(interaction.user.tag, interaction.author.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setTitle(response.title)
-        .setDescription(response.explanation)
-        .setField('Copyright', `©️ ${response.copyright}`, true)
-        .setField('Link', `[Click here!](response.hdurl)`, true)
-        .setImage(response.hdurl)
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setTitle(data.title)
+        .setDescription(data.explanation)
+        .addField('Copyright', data.copyright ? `©️ ${data.copyright}` : `None`, true)
+        .addField('Link', `[Click here!](${data.hdurl})`, true)
+        .setImage(data.hdurl)
         .setFooter(`Bot ID: ${client.user.id}`)
         .setColor('ffffff')
         .setTimestamp();
 
-      interaction.reply(apodEmbed);
+      interaction.reply({ embeds: [apodEmbed]})
+        .then(console.log)
+	      .catch(console.error);
     })
     .catch(console.error);
 }
