@@ -34,6 +34,7 @@ async function apod(interaction) {
   const nasaApiKey = process.env.NASA_API_KEY;
   axios.get(`${urls.apod}${nasaApiKey}`)
     .then(response => {
+      data = response.data;
       const apodEmbed = new Discord.MessageEmbed()
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setTitle(data.title)
