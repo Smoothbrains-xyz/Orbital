@@ -22,7 +22,7 @@
             "type": 5,
             "name": "enhanced",
             "description": "Determines whether to pull and enhanced or raw image",
-            "required": false
+            "required": true
           }
         ]
       }
