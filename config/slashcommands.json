@@ -29,19 +29,12 @@
     ]
   },
   {
-    "name": "util",
-    "description": "General utility commands",
-    "options": [
-      {
-        "type": 1,
-        "name": "help",
-        "description": "Help Command and full command list"
-      },
-      {
-        "type": 1,
-        "name": "ping",
-        "description": "Show bot ping"
-      }
-    ]
+    "name": "help",
+    "description": "Help Command and full command list"
+  },
+  {
+    "type": 1,
+    "name": "ping",
+    "description": "Show bot ping"
   }
 ]
