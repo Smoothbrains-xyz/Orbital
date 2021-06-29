@@ -6,5 +6,37 @@
   {
     "name": "iss",
     "description": "Displays the current location of the International Space Station as well as its inhabitants"
-  }
+  },
+  {
+  "name": "epic",
+  "description": "Returns images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
+  "options": [
+    {
+      "type": 1,
+      "name": "enhanced",
+      "description": "Returns enhanced images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
+      "options": [
+        {
+          "type": 5,
+          "name": "newest",
+          "description": "If true, it shows the most recent image. Otherwise, it shows a random image.",
+          "required": false
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "natural",
+      "description": "Returns natural images collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
+      "options": [
+        {
+          "type": 5,
+          "name": "newest",
+          "description": "If true, it shows the most recent image. Otherwise, it shows a random image.",
+          "required": false
+        }
+      ]
+    }
+  ]
+}
 ]
