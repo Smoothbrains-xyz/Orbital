@@ -59,7 +59,7 @@ async function apod(interaction) {
 async function iss(interaction) {
   axios.get("http://api.open-notify.org/iss-now.json")
     .then(response => {
-      data = response;
+      data = response.data;
       const issEmbed = new Discord.MessageEmbed()
         .setTitle("The current location of the ISS!")
         .setURL('https://spotthestation.nasa.gov/tracking_map.cfm')
@@ -69,12 +69,12 @@ async function iss(interaction) {
         .setTimestamp();
       axios.get("http://api.open-notify.org/astros.json")
         .then(response => {
-          data = response;
+          data = response.data;
           issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
-          interaction.reply({ embeds: issEmbed });
+          interaction.reply({ embeds: [issEmbed] });
         });
     })
-    .catch(error => { if (error) interaction.editReply("Unable to fetch data. Please try again!") });
+    .catch(console.error);
 }
 
 client.login(process.env.TOKEN);
