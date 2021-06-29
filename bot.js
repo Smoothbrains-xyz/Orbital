@@ -57,7 +57,7 @@ async function apod(interaction) {
 }
 
 async function iss(interaction) {
-  axios.get(`${urls.iss}`)
+  axios.get(`${urls.iss_position}`)
     .then(response => {
       data = response.data;
       const issEmbed = new Discord.MessageEmbed()
@@ -67,7 +67,7 @@ async function iss(interaction) {
         .setColor("ffffff")
         .setFooter(`Bot ID: ${client.user.id}`)
         .setTimestamp();
-      axios.get("http://api.open-notify.org/astros.json")
+      axios.get(`${urls.iss_astros}`)
         .then(response => {
           data = response.data;
           issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);

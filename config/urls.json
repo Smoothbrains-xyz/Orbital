@@ -1,4 +1,5 @@
 {
   "apod": "https://api.nasa.gov/planetary/apod?api_key=",
-  "iss": "http://api.open-notify.org/iss-now.json"
+  "iss_location": "http://api.open-notify.org/iss-now.json",
+  "iss_astros": "http://api.open-notify.org/astros.json"
 }
