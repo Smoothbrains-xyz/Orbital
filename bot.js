@@ -88,7 +88,6 @@ async function iss(interaction) {
     .catch(console.error);
 }
 
-<<<<<<< HEAD
 async function help(interaction) {
       const helpEmbed = new Discord.MessageEmbed()
         .setTitle("Help Command • Orbital")
@@ -108,8 +107,6 @@ async function ping(interaction) {
     .setTimestamp();
 }
 
-client.login(process.env.TOKEN);
-=======
 async function epic (action, interaction) {
   if (action === "natural") {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
