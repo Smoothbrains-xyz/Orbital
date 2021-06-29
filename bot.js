@@ -10,6 +10,13 @@ const axios = require('axios');
 
 const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
+const embedInfo = {
+  color: "ffffff",
+  footer: [
+    `${client.user.tag}`,
+    `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`
+  ]
+}
 
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
@@ -56,8 +63,8 @@ async function apod(interaction) {
         .addField('Copyright', data.copyright ? `©️ ${data.copyright}` : `None`, true)
         .addField('Link', `[Click here!](${data.hdurl})`, true)
         .setImage(data.hdurl)
-        .setFooter(`Bot ID: ${client.user.id}`)
-        .setColor('ffffff')
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setColor(`${embedInfo.color}`)
         .setTimestamp();
 
       interaction.reply({ embeds: [apodEmbed]});
@@ -73,7 +80,7 @@ async function iss(interaction) {
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setTitle("International Space Station")
         .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
-        .setFooter(`Bot ID: ${client.user.id}`)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
         .setColor("ffffff")
         .setTimestamp();
       axios.get(`${urls.iss_astros}`)
@@ -94,7 +101,7 @@ async function help(interaction) {
         .setDescription("TODO")
         .addField("Command List:", "TODO")
         .setColor("ffffff")
-        .setFooter(`• Orbital`)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
         .setTimestamp();
 
       interaction.reply({ embeds: [helpEmbed] });
@@ -105,7 +112,7 @@ async function ping(interaction) {
     .setTitle("Current Ping • Orbital")
     .setDescription(`:ping_pong: Pong: ${client.ws.ping}ms!`)
     .setColor("ffffff")
-    .setFooter(`• Orbital`)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setTimestamp();
 
   interaction.reply({ embeds: [pingEmbed] });
@@ -130,8 +137,8 @@ async function epic (action, interaction) {
               .addField("Solar Position", `\`X\`:${Math.trunc(randomImage.sun_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.sun_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.sun_j2000_position.z)}`, true)
               .addField("Lunar Position", `\`X\`:${Math.trunc(randomImage.lunar_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.lunar_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.lunar_j2000_position.z)}`, true)
               .setImage(randomImageURL)
-              .setFooter(`Bot ID: ${client.user.id}`)
-              .setColor('ffffff')
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setColor(`${embedInfo.color}`)
               .setTimestamp();
             interaction.reply({ embeds: [epicNaturalEmbed] });
           });
@@ -154,8 +161,8 @@ async function epic (action, interaction) {
               .addField("Solar Position", `\`X\`:${Math.trunc(randomImage.sun_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.sun_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.sun_j2000_position.z)}`, true)
               .addField("Lunar Position", `\`X\`:${Math.trunc(randomImage.lunar_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.lunar_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.lunar_j2000_position.z)}`, true)
               .setImage(randomImageURL)
-              .setFooter(`Bot ID: ${client.user.id}`)
-              .setColor('ffffff')
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setColor(`${embedInfo.color}`)
               .setTimestamp();
             interaction.reply({ embeds: [epicEnhancedEmbed] });
           });
