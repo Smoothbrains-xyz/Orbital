@@ -92,7 +92,7 @@ async function epic (action, interaction) {
           .then(response => {
             data = response.data;
             randomImage = data[Math.floor(Math.random() * data.length)];
-            randomImageURL = `${urls.epic_natural_archive}${randomDate.replace('-', '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
+            randomImageURL = `${urls.epic_natural_archive}${randomDate.replace(/-/g, '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
             interaction.reply({ embeds: [new Discord.MessageEmbed().setImage(randomImageURL)] });
           });
       });
