@@ -2,5 +2,9 @@
   {
     "name": "apod",
     "description": "NASA's Astronomy Picture of the Day"
+  },
+  {
+    "name": "iss",
+    "description": "Displays the current location of the International Space Station as well as its inhabitants"
   }
 ]

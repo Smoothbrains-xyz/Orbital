@@ -52,4 +52,21 @@ async function apod(interaction) {
     .catch(console.error);
 }
 
+async function showIssLocation(interaction) {
+  axios.get("http://api.open-notify.org/iss-now.json")
+    .then(response => {
+      data = response;
+      interaction.reply(
+        new Discord.MessageEmbed()
+          .setTitle("The current location of the ISS!")
+          .setImage(
+            `https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`
+          )
+          .setURL("https://spotthestation.nasa.gov/tracking_map.cfm")
+          .setColor("ffffff")
+      );
+    })
+    .catch(error => { if (error) interaction.editReply("Unable to fetch data. Please try again!") });
+}
+
 client.login(process.env.TOKEN);
