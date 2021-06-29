@@ -1,5 +1,7 @@
 {
   "apod": "https://api.nasa.gov/planetary/apod?api_key=",
   "iss_location": "http://api.open-notify.org/iss-now.json",
-  "iss_astros": "http://api.open-notify.org/astros.json"
+  "iss_astros": "http://api.open-notify.org/astros.json",
+  "epic_natural_date": "https://api.nasa.gov/EPIC/api/natural/all?api_key=",
+  "epic_natural_image": "https://api.nasa.gov/EPIC/api/natural/date/"
 }

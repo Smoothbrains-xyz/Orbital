@@ -31,7 +31,7 @@ client.on("interaction", interaction => {
       iss(interaction);
       break;
     case "epic":
-      epic(interaction.options[0].name /* Subcommand name */, interaction);
+      epic(interaction.options.first().name /* Subcommand name */, interaction);
       break;
   } // End interaction command name switch
 });
@@ -82,7 +82,16 @@ async function iss(interaction) {
 
 async function epic (action, interaction) {
   if (action === "natural") {
-    console.log(interaction);
+    axios.get(`${urls.epic_natural_date}`)
+      .then(response => {
+        data = response.data;
+        randomDate = data[Math.floor(Math.random() * data.length)].date;
+        axios.get(`${urls.epic_natural_image}${randomDate}?api_key=${nasaApiKey}`)
+          .then(response => {
+            data = response.data;
+            console.log(data);
+          });
+      });
   } else if (action === "enhanced") {
     console.log(interaction);
   }
