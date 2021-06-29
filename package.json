@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ADawesomeguy/nasa-bot/issues"
   },
-  "homepage": "https://github.com/ADawesomeguy/nasa-bot#readme"
+  "homepage": "https://github.com/ADawesomeguy/nasa-bot#readme",
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
 }
