@@ -96,6 +96,8 @@ async function help(interaction) {
         .setColor("ffffff")
         .setFooter(`• Orbital`)
         .setTimestamp();
+
+      interaction.reply({ embeds: [helpEmbed] });
 }
 
 async function ping(interaction) {
@@ -105,6 +107,8 @@ async function ping(interaction) {
     .setColor("ffffff")
     .setFooter(`• Orbital`)
     .setTimestamp();
+
+  interaction.reply({ embeds: [pingEmbed] });
 }
 
 async function epic (action, interaction) {
