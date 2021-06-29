@@ -4,5 +4,8 @@
   "iss_astros": "http://api.open-notify.org/astros.json",
   "epic_natural_date": "https://api.nasa.gov/EPIC/api/natural/all?api_key=",
   "epic_natural_image": "https://api.nasa.gov/EPIC/api/natural/date/",
-  "epic_natural_archive": "https://api.nasa.gov/EPIC/archive/natural/"
+  "epic_natural_archive": "https://api.nasa.gov/EPIC/archive/natural/",
+  "epic_enhanced_date": "https://api.nasa.gov/EPIC/api/enhanced/all?api_key=",
+  "epic_enhanced_image": "https://api.nasa.gov/EPIC/api/enhanced/date/",
+  "epic_enhanced_archive": "https://api.nasa.gov/EPIC/enhanced/natural/"
 }

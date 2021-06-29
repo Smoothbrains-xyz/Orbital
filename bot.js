@@ -108,7 +108,29 @@ async function epic (action, interaction) {
           });
       });
   } else if (action === "enhanced") {
-    console.log(interaction);
+    axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
+      .then(response => {
+        data = response.data;
+        randomDate = data[Math.floor(Math.random() * data.length)].date;
+        axios.get(`${urls.epic_enhanced_image}${randomDate}?api_key=${nasaApiKey}`)
+          .then(response => {
+            data = response.data;
+            randomImage = data[Math.floor(Math.random() * data.length)];
+            randomImageURL = `${urls.epic_enhanced_archive}${randomDate.replace(/-/g, '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
+            const epicEnhancedEmbed = new Discord.MessageEmbed()
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+              .setTitle("NASA Earth Polychromatic Imaging Camera (EPIC)")
+              .setDescription(randomImage.caption)
+              .addField("DSCOVR Position", `\`X\`: ${Math.trunc(randomImage.dscovr_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.dscovr_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.dscovr_j2000_position.z)}`, true)
+              .addField("Solar Position", `\`X\`:${Math.trunc(randomImage.sun_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.sun_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.sun_j2000_position.z)}`, true)
+              .addField("Lunar Position", `\`X\`:${Math.trunc(randomImage.lunar_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.lunar_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.lunar_j2000_position.z)}`, true)
+              .setImage(randomImageURL)
+              .setFooter(`Bot ID: ${client.user.id}`)
+              .setColor('ffffff')
+              .setTimestamp();
+            interaction.reply({ embeds: [epicEnhancedEmbed] });
+          });
+      });
   }
 }
 
