@@ -67,8 +67,8 @@ async function iss(interaction) {
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setTitle("International Space Station")
         .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
-        .setColor("ffffff")
         .setFooter(`Bot ID: ${client.user.id}`)
+        .setColor("ffffff")
         .setTimestamp();
       axios.get(`${urls.iss_astros}`)
         .then(response => {
@@ -99,7 +99,11 @@ async function epic (action, interaction) {
               .addField("DSCOVR Position", `\`X\`: ${randomImage.dscovr_j2000_position.x}\n\`Y\`: ${randomImage.dscovr_j2000_position.y}\n\`Z\`: ${randomImage.dscovr_j2000_position.z}`, true)
               .addField("Solar Position", `\`X\`:${randomImage.sun_j2000_position.x}\n\`Y\`: ${randomImage.sun_j2000_position.y}\n\`Z\`: ${randomImage.sun_j2000_position.z}`, true)
               .addField("Lunar Position", `\`X\`:${randomImage.lunar_j2000_position.x}\n\`Y\`: ${randomImage.lunar_j2000_position.y}\n\`Z\`: ${randomImage.lunar_j2000_position.z}`, true)
-            interaction.reply({ embeds: [new Discord.MessageEmbed().setImage(randomImageURL)] });
+              .setImage(randomImageURL)
+              .setFooter(`Bot ID: ${client.user.id}`)
+              .setColor('ffffff')
+              .setTimestamp();
+            interaction.reply({ embeds: [epicNaturalEmbed] });
           });
       });
   } else if (action === "enhanced") {
