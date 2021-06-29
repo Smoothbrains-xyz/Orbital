@@ -45,6 +45,19 @@ client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
   if (!interaction.isCommand()) return;
 
+  // Switch between categories and uncategorized commands
+  switch(interaction.commandName) {
+    case "space":
+      space(interaction);
+      break;
+    case "help":
+      help(interaction);
+      break;
+    case "ping":
+      ping(interaction);
+      break;
+  }
+
   switch(interaction.commandName) {
     case "apod":
       apod(interaction);
@@ -63,6 +76,20 @@ client.on("interaction", interaction => {
       break;
   } // End interaction command name switch
 });
+
+async function space(interaction) {
+  switch(interaction.options.first().name) {
+    case "apod":
+      apod(interaction);
+      break;
+    case "iss":
+      iss(interaction);
+      break;
+    case "epic":
+      epic(interaction);
+      break;
+  }
+}
 
 async function apod(interaction) {
   axios.get(`${urls.apod}${nasaApiKey}`)
@@ -130,8 +157,9 @@ async function ping(interaction) {
   interaction.reply({ embeds: [pingEmbed] });
 }
 
-async function epic (action, interaction) {
-  if (action === "natural") {
+async function epic (interaction) {
+  // If "enhanced" is false
+  if (!interaction.options.first().options.first()) {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -155,7 +183,8 @@ async function epic (action, interaction) {
             interaction.reply({ embeds: [epicNaturalEmbed] });
           });
       });
-  } else if (action === "enhanced") {
+  // If "enhanced" is true
+  } else if (interaction.options.first().options.first()) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
