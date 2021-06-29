@@ -64,9 +64,10 @@ async function iss(interaction) {
     .then(response => {
       data = response.data;
       const issEmbed = new Discord.MessageEmbed()
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setTitle("International Space Station")
         .addField("Coordinates", `(${data.iss_position.latitude}, ${data.iss_position.longitude})`, true)
-        .addField("Link", 'https://spotthestation.nasa.gov/tracking_map.cfm', true)
+        .addField("Link", `[Click here!](https://spotthestation.nasa.gov/tracking_map.cfm)`, true)
         .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
         .setColor("ffffff")
         .setFooter(`Bot ID: ${client.user.id}`)
