@@ -30,6 +30,12 @@ client.on("interaction", interaction => {
     case "iss":
       iss(interaction);
       break;
+    case "help":
+      help(interaction);
+      break;
+    case "ping":
+      ping(interaction);
+      break;
   } // End interaction command name switch
 });
 
@@ -75,6 +81,25 @@ async function iss(interaction) {
         });
     })
     .catch(console.error);
+}
+
+async function help(interaction) {
+      const helpEmbed = new Discord.MessageEmbed()
+        .setTitle("Help Command • Orbital")
+        .setDescription("TODO")
+        .addField("Command List:", "TODO")
+        .setColor("ffffff")
+        .setFooter(`• Orbital`)
+        .setTimestamp();
+}
+
+async function ping(interaction) {
+  const pingEmbed = new Discord.MessageEmbed()
+    .setTitle("Current Ping • Orbital")
+    .setDescription(`:ping_pong: Pong: ${client.ws.ping}ms!`)
+    .setColor("ffffff")
+    .setFooter(`• Orbital`)
+    .setTimestamp();
 }
 
 client.login(process.env.TOKEN);

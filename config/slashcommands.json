@@ -4,6 +4,14 @@
     "description": "NASA's Astronomy Picture of the Day"
   },
   {
+    "name": "help",
+    "description": "Help Command and full command list"
+  },
+  {
+    "name": "ping",
+    "description": "Show bot ping"
+  },
+  {
     "name": "iss",
     "description": "Displays the current location of the International Space Station as well as its inhabitants"
   },
