@@ -30,8 +30,6 @@ client.on("interaction", interaction => {
     case "iss":
       iss(interaction);
       break;
-    default:
-      interaction.reply("This commands is still in progress and will hopefully be available shortly);
   } // End interaction command name switch
 });
 
