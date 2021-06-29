@@ -38,6 +38,7 @@
         "description": "Help Command and full command list"
       },
       {
+        "type": 1,
         "name": "ping",
         "description": "Show bot ping"
       }
