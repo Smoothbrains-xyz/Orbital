@@ -93,7 +93,7 @@ async function epic (action, interaction) {
             data = response.data;
             randomImage = data[Math.floor(Math.random() * data.length)];
             randomImageURL = `${urls.epic_natural_archive}${randomDate.replace('-', '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
-            interaction.reply(new Discord.MessageEmbed().setImage(randomImageURL));
+            interaction.reply({ embeds: [new Discord.MessageEmbed().setImage(randomImageURL)] });
           });
       });
   } else if (action === "enhanced") {
