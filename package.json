@@ -1,0 +1,19 @@
+{
+  "name": "nasa-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ADawesomeguy/nasa-bot.git"
+  },
+  "author": "Abheek Dhawan",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ADawesomeguy/nasa-bot/issues"
+  },
+  "homepage": "https://github.com/ADawesomeguy/nasa-bot#readme"
+}
