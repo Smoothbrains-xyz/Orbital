@@ -68,7 +68,7 @@ async function showIssLocation(interaction) {
         .then(response => {
           data = response;
           issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
-          interaction.reply(issEmbed);
+          interaction.reply({ embeds: issEmbed });
         });
     })
     .catch(error => { if (error) interaction.editReply("Unable to fetch data. Please try again!") });
