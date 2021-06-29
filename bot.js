@@ -9,8 +9,12 @@ const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD
 const axios = require('axios');
 
 const urls = require('./config/urls.json');
+const slashCommands = require('./config/slashcommands.json')
 
 client.once('ready', () => {
+  // Register slash commands globally
+  client.application.commands.set(slashCommands);
+
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 });
