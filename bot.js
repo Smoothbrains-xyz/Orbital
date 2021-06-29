@@ -27,6 +27,11 @@ client.on("interaction", interaction => {
     case "apod":
       apod(interaction);
       break;
+    case "iss"
+      iss(interaction);
+      break;
+    default:
+      interaction.reply("This commands is still in progress and will hopefully be available shortly);
   } // End interaction command name switch
 });
 
@@ -53,7 +58,7 @@ async function apod(interaction) {
     .catch(console.error);
 }
 
-async function showIssLocation(interaction) {
+async function iss(interaction) {
   axios.get("http://api.open-notify.org/iss-now.json")
     .then(response => {
       data = response;
