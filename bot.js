@@ -27,7 +27,7 @@ client.on("interaction", interaction => {
     case "apod":
       apod(interaction);
       break;
-    case "iss"
+    case "iss":
       iss(interaction);
       break;
     default:
