@@ -57,7 +57,7 @@ async function apod(interaction) {
 }
 
 async function iss(interaction) {
-  axios.get("http://api.open-notify.org/iss-now.json")
+  axios.get(`${urls.iss}`)
     .then(response => {
       data = response.data;
       const issEmbed = new Discord.MessageEmbed()
