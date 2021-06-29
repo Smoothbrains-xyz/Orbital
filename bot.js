@@ -74,8 +74,8 @@ async function iss(interaction) {
         .then(response => {
           astroData = response.data;
           issEmbed.addField(`Astronauts`, `${astroData.people.map(e => e.name).join(" • ")}`);
-          .addField("Coordinates", `(${data.iss_position.latitude}, ${data.iss_position.longitude})`, true)
-          .addField("Link", `[Click here!](https://spotthestation.nasa.gov/tracking_map.cfm)`, true)
+          issEmbed.addField("Coordinates", `(${data.iss_position.latitude}, ${data.iss_position.longitude})`, true)
+          issEmbed.addField("Link", `[Click here!](https://spotthestation.nasa.gov/tracking_map.cfm)`, true)
           interaction.reply({ embeds: [issEmbed] });
         });
     })
