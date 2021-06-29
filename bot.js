@@ -166,7 +166,7 @@ async function epic (interaction) {
           });
       });
   // If "enhanced" is true
-  } else if (interaction.options.first().options.first()v.alue) {
+  } else if (interaction.options.first().options.first().value) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
