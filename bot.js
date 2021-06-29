@@ -33,16 +33,14 @@ client.on("interaction", interaction => {
     case "iss":
       iss(interaction);
       break;
-<<<<<<< HEAD
     case "help":
       help(interaction);
       break;
     case "ping":
       ping(interaction);
-=======
+      break;
     case "epic":
       epic(interaction.options.first().name /* Subcommand name */, interaction);
->>>>>>> 871c5702e4436e8041bc1b0e543b639fb4f57d49
       break;
   } // End interaction command name switch
 });
@@ -165,4 +163,3 @@ async function epic (action, interaction) {
 }
 
 client.login(token);
->>>>>>> 871c5702e4436e8041bc1b0e543b639fb4f57d49
