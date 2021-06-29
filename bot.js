@@ -93,6 +93,12 @@ async function epic (action, interaction) {
             data = response.data;
             randomImage = data[Math.floor(Math.random() * data.length)];
             randomImageURL = `${urls.epic_natural_archive}${randomDate.replace(/-/g, '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
+            const epicNaturalEmbed = new Discord.MessageEmbed()
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+              .setTitle(randomImage.caption)
+              .addField("DSCOVR Position", `\`X\`: ${randomImage.dscovr_j2000_position.x}\n\`Y\`: ${randomImage.dscovr_j2000_position.y}\n\`Z\`: ${randomImage.dscovr_j2000_position.z}`, true)
+              .addField("Solar Position", `\`X\`:${randomImage.sun_j2000_position.x}\n\`Y\`: ${randomImage.sun_j2000_position.y}\n\`Z\`: ${randomImage.sun_j2000_position.z}`, true)
+              .addField("Lunar Position", `\`X\`:${randomImage.lunar_j2000_position.x}\n\`Y\`: ${randomImage.lunar_j2000_position.y}\n\`Z\`: ${randomImage.lunar_j2000_position.z}`, true)
             interaction.reply({ embeds: [new Discord.MessageEmbed().setImage(randomImageURL)] });
           });
       });
