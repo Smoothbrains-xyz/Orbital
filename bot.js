@@ -213,7 +213,7 @@ async function epic (interaction) {
   }
 }
 
-async function serverInfo(interaction) {
+async function botInfo(interaction) {
   const uptimeDays = client.uptime / 86400000;
   let serverCount;
   await client.shard.fetchClientValues('guilds.cache.size')
