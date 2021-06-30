@@ -269,7 +269,7 @@ async function botInfo(interaction) {
 }
 
 async function memberInfo(interaction) {
-  const member = interaction.guild.member(interaction.options.first().options.first());
+  const member = interaction.guild.members.fetch(interaction.options.first().options.first().id);
 
   const memberInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
