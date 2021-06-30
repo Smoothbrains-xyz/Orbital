@@ -297,7 +297,7 @@ async function roleInfo(interaction) {
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
 
-  interaction.reply({ embeds: roleInfoEmbed });
+  interaction.reply({ embeds: [roleInfoEmbed] });
 }
 
 client.login(token);
