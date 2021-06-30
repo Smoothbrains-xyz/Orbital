@@ -234,7 +234,7 @@ async function serverInfo(interaction) {
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle(`**${guild.name}** Info`)
     .addField("Owner", `<@${guild.ownerID}>`, true)
-    .addField("Region", guild.region, true)
+    //.addField("Region", guild.region, true)
     .addField("Verification Level", guild.verificationLevel, true)
     .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
