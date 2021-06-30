@@ -49,7 +49,7 @@
         "options": [
           {
             "type": 6,
-            "name": "user",
+            "name": "member",
             "description": "The user that the bot returns information about",
             "required": true
           }
