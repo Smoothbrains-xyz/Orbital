@@ -58,7 +58,7 @@
       {
         "type": 1,
         "name": "role",
-        "description": "Returns information about a given server role, such as its perms, color, and whether or not it is mentionable",
+        "description": "Returns information about a given server role, such as its perms, color, if it is mentionable",
         "options": [
           {
             "type": 6,
