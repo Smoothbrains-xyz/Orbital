@@ -272,8 +272,7 @@ async function memberInfo(interaction) {
   const member = interaction.guild.members.fetch(interaction.options.first().options.first().id);
 
   const memberInfoEmbed = new Discord.MessageEmbed()
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-    .setTitle(`**${member.user.tag}** Info`)
+    .setAuthor(member.user.tag, member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .addField("Roles", member.roles.cache.map(r => `${r}`).join(' • '))
     .addField("Permissions", member.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
