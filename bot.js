@@ -4,7 +4,10 @@
 */
 
 const Discord = require('discord.js');
-const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS"] });
+const client = new Discord.Client({
+  intents: ["GUILD_PRESENCES",  "GUILD_MEMBERS", "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS"],
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+});
 
 const axios = require('axios');
 
@@ -242,7 +245,7 @@ async function serverInfo(interaction) {
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
-  interaction.reply({  embeds: [serverInfoEmbed] })
+  interaction.reply({ embeds: [serverInfoEmbed] })
 }
 
 async function botInfo(interaction) {
