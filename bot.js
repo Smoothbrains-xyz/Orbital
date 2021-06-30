@@ -226,9 +226,7 @@ async function botInfo(interaction) {
     .setTitle("Orbital Info")
     .addField(`Servers`, `${serverCount}`, true)
     .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
-    .addField('\u200b', '\u200b')
-    .addField(`Invite Link`, `[Click here!](https://adat.link/orbital)`, true)
-    .addField(`GitHub Link`, `[Click here!](https://github.com/ADawesomeguy/nasa-bot)`, true)
+    .addField(`Links`, `[Click here for the invite link!](https://adat.link/orbital)\n[Click here for the GitHub link!](https://github.com/ADawesomeguy/nasa-bot`, true)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
