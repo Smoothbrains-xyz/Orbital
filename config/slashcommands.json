@@ -50,7 +50,7 @@
           {
             "type": 6,
             "name": "member",
-            "description": "The user that the bot returns information about",
+            "description": "The member that the bot returns information about",
             "required": true
           }
         ]
