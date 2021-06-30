@@ -50,6 +50,9 @@ client.on("interaction", interaction => {
     case "space":
       space(interaction);
       break;
+    case "info":
+      info(interaction);
+      break;
     case "help":
       help(interaction);
       break;
@@ -69,6 +72,23 @@ async function space(interaction) {
       break;
     case "epic":
       epic(interaction);
+      break;
+  }
+}
+
+async function info(interaction) {
+  switch (interaction.options.first().name) {
+    case "server":
+      serverInfo(interaction);
+      break;
+    case "bot":
+      botInfo(interaction);
+      break;
+    case "member":
+      memberInfo(interaction);
+      break;
+    case "role":
+      roleInfo(interaction);
       break;
   }
 }
@@ -191,6 +211,27 @@ async function epic (interaction) {
           });
       });
   }
+}
+
+async function serverInfo(interaction) {
+  const uptimeDays = client.uptime / 86400000;
+  let serverCount;
+  await client.shard.fetchClientValues('guilds.cache.size')
+	.then(results => {
+		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
+	})
+	.catch(console.error);
+  const botInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Orbital Info")
+    .addField(`Servers`, `${serverCount}`)
+    .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
+    .addField(`Invite Link`, `[Click here!](https://adat.link/orbital)`)
+    .addField(`GitHub Link`, `[Click here!](https://github.com/ADawesomeguy/nasa-bot)`, true)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+  interaction.reply({ embeds: [botInfoEmbed] });
 }
 
 client.login(token);
