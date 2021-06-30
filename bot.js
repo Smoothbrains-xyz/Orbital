@@ -268,10 +268,10 @@ async function botInfo(interaction) {
   interaction.reply({ embeds: [botInfoEmbed] });
 }
 
-async function userInfo(interaction) {
+async function memberInfo(interaction) {
   const member = interaction.options.first().options.first();
 
-  const userInfoEmbed = new Discord.MessageEmbed()
+  const memberInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle(`**${member.user.tag}** Info`)
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
@@ -283,7 +283,7 @@ async function userInfo(interaction) {
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
 
-  interaction.reply({ embeds: [userInfoEmbed] });
+  interaction.reply({ embeds: [memberInfoEmbed] });
 }
 
 client.login(token);
