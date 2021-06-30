@@ -72,11 +72,11 @@
   },
   {
     "name": "help",
-    "description": "Help Command and full command list"
+    "description": "A utility command for help and a list of all available commands"
   },
   {
     "type": 1,
     "name": "ping",
-    "description": "Show bot ping"
+    "description": "A utility command to show the client and API latency"
   }
 ]
