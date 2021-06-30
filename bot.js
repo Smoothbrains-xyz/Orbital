@@ -154,9 +154,11 @@ async function help(interaction) {
 
 async function ping(interaction) {
   const pingEmbed = new Discord.MessageEmbed()
-    .setTitle("Current Ping • Orbital")
-    .setDescription(`:ping_pong: Pong: ${client.ws.ping}ms!`)
-    .setColor("ffffff")
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Pong!")
+    .setDescription(`🏓 ${Date.now() - interaction.createdTimestamp}ms`)
+    .addField(`API`, `${Math.round(client.ws.ping)}ms`)
+    .setColor(`${embedInfo.color}`)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setTimestamp();
 
