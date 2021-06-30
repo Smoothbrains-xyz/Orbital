@@ -268,50 +268,22 @@ async function botInfo(interaction) {
   interaction.reply({ embeds: [botInfoEmbed] });
 }
 
-async function userInfo(message) {
-  if (!message.content.split(" ")[1]) {
-    message.reply("Query must contain at least 3 characters!")
-    return;
-  }
-
-  if (message.content.split(" ")[1].length < 3) {
-    message.reply("Query must contain at least 3 characters!")
-    return;
-  }
-
-  const members = message.guild.members.cache.filter(member => {
-    if (member.nickname) {
-      if (message.mentions.users.first()) {
-        return message.mentions.users.first().id === member.user.id || member.user.username.toLowerCase().includes(message.content.split(" ")[1].toLowerCase()) || member.nickname.toLowerCase().includes(message.content.split(" ")[1].toLowerCase());
-      } else {
-        return member.user.username.toLowerCase().includes(message.content.split(" ")[1].toLowerCase()) || member.nickname.toLowerCase().includes(message.content.split(" ")[1].toLowerCase());
-      }
-    } else {
-      if (message.mentions.users.first()) {
-        return message.mentions.users.first().id === member.user.id || member.user.username.toLowerCase().includes(message.content.split(" ")[1].toLowerCase())
-      } else {
-        return member.user.username.toLowerCase().includes(message.content.split(" ")[1].toLowerCase());
-      }
-    }
-  });
-
-  if (members.array().length < 1) {
-    message.reply("No members found with that name!");
-    return;
-  }
-
-  const member = members.array()[0];
+async function userInfo(interaction) {
+  const member = interaction.options.first().options.first();
 
   const userInfoEmbed = new Discord.MessageEmbed()
-    .setAuthor(member.user.tag, member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle(`**${member.user.tag}** Info`)
+    .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .addField("Roles", member.roles.cache.map(r => `${r}`).join(' • '))
     .addField("Permissions", member.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
     .addField("Joined at", `${new Date(member.joinedTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`, true)
     .addField("Account created", `${new Date(member.user.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`, true)
-    .setColor("00c5ff")
-    .setFooter(`User ID: ${member.user.id}`)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
     .setTimestamp();
-  message.channel.send(userInfoEmbed).catch(console.error);
+
+  interaction.reply({ embeds: [userInfoEmbed] });
 }
 
 client.login(token);
