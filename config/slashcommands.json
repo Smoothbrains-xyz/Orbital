@@ -61,7 +61,7 @@
         "description": "Returns information about a given server role, such as its perms, color, and if it is mentionable",
         "options": [
           {
-            "type": 6,
+            "type": 8,
             "name": "role",
             "description": "The role that the bot returns information about",
             "required": true
