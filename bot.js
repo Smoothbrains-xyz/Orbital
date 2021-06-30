@@ -286,7 +286,7 @@ async function memberInfo(interaction) {
 }
 
 async function roleInfo(interaction) {
-  const role = interaction.options.first().options.first()
+  const role = interaction.options.first().options.first().role;
 
   const roleInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
