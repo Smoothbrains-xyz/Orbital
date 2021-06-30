@@ -37,11 +37,7 @@
         "name": "server",
         "description": "Returns information for the server, such as the icon, member count, and roles"
       },
-      {
-        "type": 1,
-        "name": "bot",
-        "description": "Returns information for the Orbital bot, such as the server and shard counts"
-      },
+
       {
         "type": 1,
         "name": "member",
@@ -73,6 +69,10 @@
   {
     "name": "help",
     "description": "A utility command for help and a list of all available commands"
+  },
+  {
+    "name": "info",
+    "description": "Returns information for the Orbital bot, such as the server and shard counts"
   },
   {
     "type": 1,

@@ -62,6 +62,9 @@ client.on("interaction", interaction => {
     case "ping":
       ping(interaction);
       break;
+    case "bot":
+      bot(interaction);
+      break;
   } // End interaction command name switch
 });
 
@@ -78,15 +81,34 @@ async function space(interaction) {
       break;
   }
 }
+async function bot(interaction) {
+  const uptimeDays = client.uptime / 86400000;
+  let serverCount;
+  await client.shard.fetchClientValues('guilds.cache.size')
+	.then(results => {
+		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
+	})
+	.catch(console.error);
+  const botInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Orbital Info")
+    .addField(`Servers`, `${serverCount}`, true)
+    .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
+    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+  interaction.reply({ embeds: [botInfoEmbed] });
+}
 
 async function info(interaction) {
   switch (interaction.options.first().name) {
     case "server":
       serverInfo(interaction);
       break;
-    case "bot":
-      botInfo(interaction);
-      break;
+    // case "bot":
+    //   botInfo(interaction);
+    //   break;
     case "member":
       memberInfo(interaction);
       break;
@@ -251,25 +273,25 @@ async function serverInfo(interaction) {
   interaction.reply({ embeds: [serverInfoEmbed] })
 }
 
-async function botInfo(interaction) {
-  const uptimeDays = client.uptime / 86400000;
-  let serverCount;
-  await client.shard.fetchClientValues('guilds.cache.size')
-	.then(results => {
-		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
-	})
-	.catch(console.error);
-  const botInfoEmbed = new Discord.MessageEmbed()
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-    .setTitle("Orbital Info")
-    .addField(`Servers`, `${serverCount}`, true)
-    .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
-    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
-    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-    .setColor(`${embedInfo.color}`)
-    .setTimestamp();
-  interaction.reply({ embeds: [botInfoEmbed] });
-}
+// async function botInfo(interaction) {
+//   const uptimeDays = client.uptime / 86400000;
+//   let serverCount;
+//   await client.shard.fetchClientValues('guilds.cache.size')
+// 	.then(results => {
+// 		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
+// 	})
+// 	.catch(console.error);
+//   const botInfoEmbed = new Discord.MessageEmbed()
+//     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+//     .setTitle("Orbital Info")
+//     .addField(`Servers`, `${serverCount}`, true)
+//     .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
+//     .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
+//     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+//     .setColor(`${embedInfo.color}`)
+//     .setTimestamp();
+//   interaction.reply({ embeds: [botInfoEmbed] });
+// }
 
 async function memberInfo(interaction) {
   const member = interaction.options.first().options.first().member;
