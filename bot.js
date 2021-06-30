@@ -289,7 +289,7 @@ async function roleInfo(interaction) {
   const role = interaction.options.first().options.first()
 
   const roleInfoEmbed = new Discord.MessageEmbed()
-    .setAuthor(interaction.author.tag, interaction.author.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle(`**${role.name}** Info`)
     .addField("Permissions", role.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
     .addField("Mentionable", `${role.mentionable}`)
