@@ -7,11 +7,11 @@ Currently there's only one way to install the bot on your server - cloning this 
 
 1. Clone repo:
 ```
-git clone https://github.com/ADawesomeguy/AwesomeMod.git
+git clone https://github.com/ADawesomeguy/nasa-bot.git
 ```
 2. Enter repo and install dependencies
 ```
-cd AwesomeMod && npm i
+cd nasa-bot && npm i
 ```
 3. Run the bot:
 ```
