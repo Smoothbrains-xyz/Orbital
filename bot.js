@@ -37,7 +37,7 @@ client.once('ready', () => {
   // Set presence
   client.user.setPresence({ activities: [
     {
-      name: "the night sky",
+      name: "the night sky • /help",
       type: "WATCHING",
       url: "https://github.com/ADawesomeguy/nasa-bot"
     }
