@@ -29,12 +29,54 @@
     ]
   },
   {
+    "name": "info",
+    "description": "Commands that return useful information",
+    "options": [
+      {
+        "type": 1,
+        "name": "server",
+        "description": "Returns information for the server, such as the icon, member count, and roles"
+      },
+      {
+        "type": 1,
+        "name": "bot",
+        "description": "Returns information for the Orbital bot, such as the server and shard counts"
+      },
+      {
+        "type": 1,
+        "name": "member",
+        "description": "Returns information about a given server member, such as their icon, roles, and permissions",
+        "options": [
+          {
+            "type": 6,
+            "name": "member",
+            "description": "The member that the bot returns information about",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "name": "role",
+        "description": "Returns information about a given server role, such as its perms, color, and if it is mentionable",
+        "options": [
+          {
+            "type": 8,
+            "name": "role",
+            "description": "The role that the bot returns information about",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "help",
-    "description": "Help Command and full command list"
+    "description": "A utility command for help and a list of all available commands"
   },
   {
     "type": 1,
     "name": "ping",
-    "description": "Show bot ping"
+    "description": "A utility command to show the client and API latency"
   }
 ]
