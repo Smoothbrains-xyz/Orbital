@@ -1,4 +1,4 @@
-# AwesomeMod
+# Orbital
 ## About
 Orbital is an astronomy-oriented bot with tons of extra features! It utilizes NASA's Open APIs for cool commands like NASA's Astronomy Picture of the Day, images from NASA's Earth Polychromatic Imaging Camera (EPIC) camera aboard their DSCOVR spacecraft, as well as showing information of the International Space Station (ISS), such as its location on a map, current astronauts aboard, and its coordinates. Outside of astronomy, Orbital has nice analytics features such as commands to return information about the server, members, roles, and the bot itself. Additionally, Orbital uses slash commands for easy usage and organization. With many features to come and an active development team, feedback for improvement is always welcome!
 
