@@ -22,6 +22,9 @@ const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 
 client.once('ready', () => {
+  // Register slash commands globally
+  client.application.commands.set(slashCommands);
+  
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -43,11 +46,6 @@ client.once('ready', () => {
     }
   ]});
 });
-
-client.on('message', async message => {
-  // Register slash commands globally
-  await client.application.commands.set(slashCommands);
-})
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
