@@ -92,7 +92,7 @@ async function space(interaction) {
       break;
   }
 }
-async function bot(interaction) {
+async function data(interaction) {
   const uptimeDays = client.uptime / 86400000;
   let serverCount;
   await client.shard.fetchClientValues('guilds.cache.size')
