@@ -10,6 +10,8 @@ const client = new Discord.Client({
 });
 
 const axios = require('axios');
+const parseString = require('xml2js').parseString;
+require('dotenv').config();
 
 const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
@@ -65,6 +67,9 @@ client.on("interaction", interaction => {
         break;
       case "bot":
         bot(interaction);
+        break;
+      case "wolfram":
+        wolfram(interaction);
         break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
@@ -346,6 +351,53 @@ async function roleInfo(interaction) {
     .setTimestamp();
 
   interaction.reply({ embeds: [roleInfoEmbed] });
+}
+
+async function wolfram(interaction) {
+  interaction.defer();
+  await axios.get(`http://api.wolframalpha.com/v2/query?input=${interaction.options.first().value}&appid=${process.env.WOLFRAM_API_KEY}`)
+    .then(async response => {
+        data = response.data;
+        parseString(data, async (err, result) => {
+          const wolframEmbed = new Discord.MessageEmbed()
+            .setTitle("Results")
+            .setColor(embedInfo.color);
+          const resultButtons = [];
+          if (result.queryresult.pod) {
+            result.queryresult.pod.forEach(p => {
+              const button = new Discord.MessageButton()
+                .setCustomID(p.$.title)
+                .setLabel(p.$.title)
+                .setStyle('SECONDARY');
+              resultButtons.push(button);
+            });
+            resultButtons.splice(5)
+            const interactionMessage = await interaction.followUp({ embeds: [wolframEmbed], components: [resultButtons] });
+
+            const filter = i => i.message.id === interactionMessage.id;
+
+            const collector = interaction.channel.createMessageComponentInteractionCollector({ filter });
+
+            collector.on('collect', async i => {
+              result.queryresult.pod.forEach(p => {
+                if (p.$.title === i.customID) {
+                  const embeds = [];
+                  p.subpod.forEach(s => {
+                    const embed = new Discord.MessageEmbed()
+                      .setImage(s.img[0].$.src)
+                      .setColor(embedInfo.color);
+                    embeds.push(embed);
+                  });
+                  i.reply({ embeds: embeds });
+                }
+              });
+            });
+          } else {
+            interaction.followUp("No results!")
+          }
+        });
+    })
+    .catch(console.error)
 }
 
 client.login(token);

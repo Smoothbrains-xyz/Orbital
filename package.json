@@ -20,6 +20,8 @@
   "homepage": "https://github.com/ADawesomeguy/nasa-bot#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "discord.js": "^13.0.0-dev.acdcb906ae4691374f5d2bda1315a484c8674938"
+    "discord.js": "^13.0.0-dev.acdcb906ae4691374f5d2bda1315a484c8674938",
+    "dotenv": "^10.0.0",
+    "xml2js": "^0.4.23"
   }
 }

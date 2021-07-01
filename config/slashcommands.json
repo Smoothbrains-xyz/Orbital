@@ -75,8 +75,19 @@
     "description": "Returns information for the Orbital bot, such as the server and shard count"
   },
   {
-    "type": 1,
     "name": "ping",
     "description": "A utility command to show the client and API latency"
+  },
+  {
+    "name": "wolfram",
+    "description": "A utility command that utilizes the Wolfram|Alpha API to help with any aspect of science",
+    "options": [
+      {
+        "type": 3,
+        "name": "query",
+        "description": "The query to submit to the Wolfram|Alpha API",
+        "required": true
+      }
+    ]
   }
 ]
