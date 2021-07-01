@@ -70,17 +70,29 @@ async function news(interaction) {
 						{
 							label: 'Finance',
 							description: 'View US Finance News',
-							value: 'first_option',
+							value: 'finance',
 						},
 						{
 							label: 'Sports',
 							description: 'View US Sports News',
-							value: 'second_option',
+							value: 'sports',
 						},
 					]),
 			);
 
 		await interaction.reply({ content: 'News Options:', components: [row] });
+
+    client.on('interaction', async interaction => {
+      if (!interaction.isSelectMenu()) return;
+    
+      if (interaction.customID === 'select') {
+        if (interaction.value === 'finance') {
+          await interaction.update({ content: 'Finance selected!', components: [] });
+        } else if (interaction.value === 'sports') {
+          await interaction.update({ content: 'Sports selected!', components: [] });
+        }
+      }
+    });
 }
 
 async function ping(interaction) {
