@@ -22,6 +22,9 @@ const token = process.env.TOKEN;
   
 // })
 client.once('ready', () => {
+  // Register slash commands globally
+  client.application.commands.set(slashCommands);
+
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -43,13 +46,6 @@ client.once('ready', () => {
     }
   ]});
 });
-
-
-client.on('message', async message => {
-  // Register slash commands globally
-  await client.application.commands.set(slashCommands);
-})
-
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
@@ -87,13 +83,13 @@ async function news(interaction) {
 			);
 
 		await interaction.reply({ content: 'News Options:', components: [row] });
-
+    
     client.on('interaction', async interaction => {
       if (!interaction.isSelectMenu()) return;
     
       if (interaction.customID === 'select') {
         await interaction.update({ content: 'Something was selected!', components: [] });
-        console.log(interaction.addOptions.value)
+        // console.log(interaction.addOptions.value)
         // if (interaction.value === 'finance') {
         //   await interaction.update({ content: 'Finance selected!', components: [] });
         // } else if (interaction.value === 'sports') {
