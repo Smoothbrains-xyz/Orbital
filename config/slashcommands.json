@@ -29,6 +29,17 @@
     ]
   },
   {
+    "name": "news",
+    "description": "Commands regarding US News",
+    "options": [
+      {
+        "type": 1,
+        "name": "finance",
+        "description": "NASA's Astronomy Picture of the Day"
+      }
+    ]
+  },
+  {
     "name": "info",
     "description": "Commands that return useful information",
     "options": [
