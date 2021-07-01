@@ -30,14 +30,7 @@
   },
   {
     "name": "news",
-    "description": "Commands regarding US News",
-    "options": [
-      {
-        "type": 1,
-        "name": "finance",
-        "description": "NASA's Astronomy Picture of the Day"
-      }
-    ]
+    "description": "Returns information regarding US Newss"
   },
   {
     "name": "info",

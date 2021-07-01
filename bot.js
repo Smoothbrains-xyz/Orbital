@@ -87,15 +87,26 @@ async function space(interaction) {
 }
 
 async function news(interaction) {
-  switch(interaction.options.first().name) {
-    case "finance":
-      finance(interaction);
-      break;
-  }
-}
+  const row = new Discord.MessageActionRow()
+			.addComponents(
+				new Discord.MessageSelectMenu()
+					.setCustomID('select')
+					.setPlaceholder('Nothing selected')
+					.addOptions([
+						{
+							label: 'Finance',
+							description: 'View US Finance News',
+							value: 'first_option',
+						},
+						{
+							label: 'Sports',
+							description: 'View US Sports News',
+							value: 'second_option',
+						},
+					]),
+			);
 
-async function finance(interaction) {
-  return //Until API is ready
+		await interaction.reply({ content: 'News Options:', components: [row] });
 }
 
 async function data(interaction) {
