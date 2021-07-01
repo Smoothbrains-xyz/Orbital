@@ -71,7 +71,7 @@
     "description": "A utility command for help and a list of all available commands"
   },
   {
-    "name": "info",
+    "name": "data",
     "description": "Returns information for the Orbital bot, such as the server and shard counts"
   },
   {
