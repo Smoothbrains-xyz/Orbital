@@ -2,6 +2,7 @@
 *  TOKEN: Bot token
 *  NASA_API_KEY: NASA API Key
 */
+require('dotenv').config()
 
 const Discord = require('discord.js');
 const client = new Discord.Client({
@@ -288,26 +289,6 @@ async function serverInfo(interaction) {
     .setTimestamp();
   interaction.reply({ embeds: [serverInfoEmbed] })
 }
-
-// async function botInfo(interaction) {
-//   const uptimeDays = client.uptime / 86400000;
-//   let serverCount;
-//   await client.shard.fetchClientValues('guilds.cache.size')
-// 	.then(results => {
-// 		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
-// 	})
-// 	.catch(console.error);
-//   const botInfoEmbed = new Discord.MessageEmbed()
-//     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-//     .setTitle("Orbital Info")
-//     .addField(`Servers`, `${serverCount}`, true)
-//     .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
-//     .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
-//     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-//     .setColor(`${embedInfo.color}`)
-//     .setTimestamp();
-//   interaction.reply({ embeds: [botInfoEmbed] });
-// }
 
 async function memberInfo(interaction) {
   const member = interaction.options.first().options.first().member;
