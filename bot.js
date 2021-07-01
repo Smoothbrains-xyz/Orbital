@@ -53,6 +53,9 @@ client.on("interaction", interaction => {
     case "space":
       space(interaction);
       break;
+    case "news":
+      news(interaction);
+      break;
     case "info":
       info(interaction);
       break;
@@ -81,6 +84,19 @@ async function space(interaction) {
       break;
   }
 }
+
+async function news(interaction) {
+  switch(interaction.options.first().name) {
+    case "finance":
+      finance(interaction);
+      break;
+  }
+}
+
+async function finance(interaction) {
+  return //Until API is ready
+}
+
 async function data(interaction) {
   const uptimeDays = client.uptime / 86400000;
   let serverCount;
