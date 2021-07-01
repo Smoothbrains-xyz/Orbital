@@ -384,6 +384,7 @@ async function wolfram(interaction) {
                   const embeds = [];
                   p.subpod.forEach(s => {
                     const embed = new Discord.MessageEmbed()
+                      .setTitle(i.customID)
                       .setImage(s.img[0].$.src)
                       .setColor(embedInfo.color);
                     embeds.push(embed);
