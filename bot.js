@@ -18,11 +18,10 @@ let embedInfo;
 
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
-
+// client.on('message', () => {
+  
+// })
 client.once('ready', () => {
-  // Register slash commands globally
-  client.application.commands.set(slashCommands);
-
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -44,6 +43,13 @@ client.once('ready', () => {
     }
   ]});
 });
+
+
+client.on('message', async message => {
+  // Register slash commands globally
+  await client.application.commands.set(slashCommands);
+})
+
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
@@ -86,11 +92,13 @@ async function news(interaction) {
       if (!interaction.isSelectMenu()) return;
     
       if (interaction.customID === 'select') {
-        if (interaction.value === 'finance') {
-          await interaction.update({ content: 'Finance selected!', components: [] });
-        } else if (interaction.value === 'sports') {
-          await interaction.update({ content: 'Sports selected!', components: [] });
-        }
+        await interaction.update({ content: 'Something was selected!', components: [] });
+        console.log(interaction.addOptions.value)
+        // if (interaction.value === 'finance') {
+        //   await interaction.update({ content: 'Finance selected!', components: [] });
+        // } else if (interaction.value === 'sports') {
+        //   await interaction.update({ content: 'Sports selected!', components: [] });
+        // }
       }
     });
 }
