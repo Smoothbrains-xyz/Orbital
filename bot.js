@@ -22,8 +22,8 @@ const token = process.env.TOKEN;
   
 // })
 client.once('ready', () => {
-  // Register slash commands globally
-  client.application.commands.set(slashCommands);
+  // // Register slash commands globally
+  // client.application.commands.set(slashCommands);
 
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
@@ -52,51 +52,50 @@ client.on("interaction", interaction => {
   if (!interaction.isCommand()) return;
 
   // Switch between categories and uncategorized commands
-  switch(interaction.commandName) {
-    case "news":
-      news(interaction);
-      break;
-    case "ping":
-      ping(interaction);
-      break;
+  switch (interaction.commandName) {
+      case "news":
+          news(interaction);
+          break;
+      case "ping":
+          ping(interaction);
+          break;
   } // End interaction command name switch
 });
 
 async function news(interaction) {
   const row = new Discord.MessageActionRow()
-			.addComponents(
-				new Discord.MessageSelectMenu()
-					.setCustomID('select')
-					.setPlaceholder('Nothing selected')
-					.addOptions([
-						{
-							label: 'Finance',
-							description: 'View US Finance News',
-							value: 'finance',
-						},
-						{
-							label: 'Sports',
-							description: 'View US Sports News',
-							value: 'sports',
-						},
-					]),
-			);
+      .addComponents(
+          new Discord.MessageSelectMenu()
+              .setCustomID('select')
+              .setPlaceholder('Nothing selected')
+              .addOptions([
+                  {
+                      label: 'Finance',
+                      description: 'View US Finance News',
+                      value: 'finance',
+                  },
+                  {
+                      label: 'Sports',
+                      description: 'View US Sports News',
+                      value: 'sports',
+                  },
+              ]),
+      );
 
-		await interaction.reply({ content: 'News Options:', components: [row] });
-    
-    client.on('interaction', async interaction => {
+  await interaction.reply({ content: 'News Options:', components: [row] });
+
+  client.on('interaction', async interaction => {
       if (!interaction.isSelectMenu()) return;
-    
+
       if (interaction.customID === 'select') {
-        await interaction.update({ content: 'Something was selected!', components: [] });
-        // console.log(interaction.addOptions.value)
-        // if (interaction.value === 'finance') {
-        //   await interaction.update({ content: 'Finance selected!', components: [] });
-        // } else if (interaction.value === 'sports') {
-        //   await interaction.update({ content: 'Sports selected!', components: [] });
-        // }
+          await interaction.defer()
+          if (interaction.values[0] === "finance") {
+              await interaction.editReply({ content: 'Finance was Selected!', components: [] });
+          } else if (interaction.values[0] === "sports") {
+              await interaction.editReply({ content: 'Sports was Selected!', components: [] });
+          }
       }
-    });
+  });
 }
 
 async function ping(interaction) {
