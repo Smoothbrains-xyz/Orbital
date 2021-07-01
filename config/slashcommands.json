@@ -29,6 +29,10 @@
     ]
   },
   {
+    "name": "news",
+    "description": "Returns information regarding US Newss"
+  },
+  {
     "name": "info",
     "description": "Commands that return useful information",
     "options": [
