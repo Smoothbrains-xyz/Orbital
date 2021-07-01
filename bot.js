@@ -65,8 +65,8 @@ client.on("interaction", interaction => {
       case "ping":
         ping(interaction);
         break;
-      case "bot":
-        bot(interaction);
+      case "data":
+        data(interaction);
         break;
       case "wolfram":
         wolfram(interaction);
