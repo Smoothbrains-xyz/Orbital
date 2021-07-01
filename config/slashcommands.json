@@ -4,7 +4,6 @@
     "description": "Returns information regarding US Newss"
   },
   {
-    "type": 1,
     "name": "ping",
     "description": "A utility command to show the client and API latency"
   }
