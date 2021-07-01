@@ -46,26 +46,37 @@ client.once('ready', () => {
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
-  if (!interaction.isCommand()) return;
+  if (!interaction.isCommand() && !interaction.isButton()) return;
 
-  // Switch between categories and uncategorized commands
-  switch(interaction.commandName) {
-    case "space":
-      space(interaction);
-      break;
-    case "info":
-      info(interaction);
-      break;
-    case "help":
-      help(interaction);
-      break;
-    case "ping":
-      ping(interaction);
-      break;
-    case "bot":
-      bot(interaction);
-      break;
-  } // End interaction command name switch
+  if (interaction.isCommand()) {
+    // Switch between categories and uncategorized commands
+    switch(interaction.commandName) {
+      case "space":
+        space(interaction);
+        break;
+      case "info":
+        info(interaction);
+        break;
+      case "help":
+        help(interaction);
+        break;
+      case "ping":
+        ping(interaction);
+        break;
+      case "bot":
+        bot(interaction);
+        break;
+    } // End interaction command name switch
+  } else if (interaction.isButton()) {
+    switch(interaction.customID) {
+      case "another-natural":
+        epic(interaction, false);
+        break;
+      case "another-enhanced":
+        epic(interaction, true);
+        break;
+    }
+  }
 });
 
 async function space(interaction) {
@@ -77,7 +88,7 @@ async function space(interaction) {
       iss(interaction);
       break;
     case "epic":
-      epic(interaction);
+      epic(interaction, interaction.options.first().options.first().value);
       break;
   }
 }
@@ -187,9 +198,9 @@ async function ping(interaction) {
   interaction.reply({ embeds: [pingEmbed] });
 }
 
-async function epic (interaction) {
+async function epic(interaction, isEnhanced) {
   // If "enhanced" is false
-  if (!interaction.options.first().options.first().value) {
+  if (!isEnhanced) {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -210,11 +221,17 @@ async function epic (interaction) {
               .setFooter(embedInfo.footer[0], embedInfo.footer[1])
               .setColor(`${embedInfo.color}`)
               .setTimestamp();
-            interaction.reply({ embeds: [epicNaturalEmbed] });
+
+            const anotherButton = new Discord.MessageButton()
+              .setCustomID('another-natural')
+              .setLabel('Another!')
+              .setStyle('SECONDARY');
+
+            interaction.reply({ embeds: [epicNaturalEmbed], components: [[anotherButton]] });
           });
       });
   // If "enhanced" is true
-  } else if (interaction.options.first().options.first().value) {
+  } else if (isEnhanced) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
         data = response.data;
@@ -235,7 +252,13 @@ async function epic (interaction) {
               .setFooter(embedInfo.footer[0], embedInfo.footer[1])
               .setColor(`${embedInfo.color}`)
               .setTimestamp();
-            interaction.reply({ embeds: [epicEnhancedEmbed] });
+
+            const anotherButton = new Discord.MessageButton()
+              .setCustomID('another-enhanced')
+              .setLabel('Another!')
+              .setStyle('SECONDARY');
+
+            interaction.reply({ embeds: [epicEnhancedEmbed], components: [[anotherButton]] });
           });
       });
   }
