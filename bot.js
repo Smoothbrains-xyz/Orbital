@@ -360,7 +360,7 @@ async function wolfram(interaction) {
         data = response.data;
         parseString(data, async (err, result) => {
           const wolframEmbed = new Discord.MessageEmbed()
-            .setTitle("Results")
+            .setTitle(`Results for \`${interaction.options.first().value}\``)
             .setColor(embedInfo.color);
           const resultButtons = [];
           if (result.queryresult.pod) {
