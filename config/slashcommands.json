@@ -30,7 +30,7 @@
   },
   {
     "name": "news",
-    "description": "Returns information regarding US Newss"
+    "description": "Returns information regarding US News"
   },
   {
     "name": "info",
