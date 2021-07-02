@@ -26,8 +26,7 @@ const newsapi = process.env.NEWS_API_KEY;
 // })
 client.once('ready', () => {
   // Register slash commands globally
-  client.application.commands.set([]);
-  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
+  client.application.commands.set(slashCommands);
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
