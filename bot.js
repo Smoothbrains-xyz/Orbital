@@ -229,6 +229,62 @@ async function news(interaction) {
   });
 }
 
+async function apod(interaction) {
+  axios.get(`${urls.apod}${nasaApiKey}`)
+    .then(response => {
+      data = response.data;
+      const apodEmbed = new Discord.MessageEmbed()
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setTitle(data.title)
+        .setDescription(data.explanation)
+        .addField('Copyright', data.copyright ? `©️ ${data.copyright}` : `None`, true)
+        .addField('Link', `[Click here!](${data.hdurl})`, true)
+        .setImage(data.hdurl)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setColor(`${embedInfo.color}`)
+        .setTimestamp();
+
+      interaction.reply({ embeds: [apodEmbed]})
+        .then(console.log)
+	      .catch(console.error);
+    })
+    .catch(console.error);
+}
+
+async function iss(interaction) {
+  axios.get(`${urls.iss_position}`)
+    .then(response => {
+      data = response.data;
+      const issEmbed = new Discord.MessageEmbed()
+        .setTitle("The current location of the ISS!")
+        .setURL('https://spotthestation.nasa.gov/tracking_map.cfm')
+        .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setColor("ffffff")
+        .setFooter(`Bot ID: ${client.user.id}`)
+        .setTimestamp();
+      axios.get(`${urls.iss_astros}`)
+        .then(response => {
+          data = response.data;
+          issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
+          interaction.reply({ embeds: [issEmbed] });
+        });
+    })
+    .catch(console.error);
+}
+
+async function help(interaction) {
+      const helpEmbed = new Discord.MessageEmbed()
+        .setTitle("Help Command • Orbital")
+        .setDescription("TODO")
+        .addField("Command List:", "TODO")
+        .setColor("ffffff")
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setTimestamp();
+
+      interaction.reply({ embeds: [helpEmbed] });
+}
+
 async function ping(interaction) {
   const pingEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
