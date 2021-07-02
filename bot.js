@@ -298,6 +298,8 @@ async function help(interaction) {
         .setTimestamp();
 
       interaction.reply({ embeds: [helpEmbed] });
+}
+
 async function thread(interaction) {
   const wait = require('util').promisify(setTimeout);
   const name = interaction.options.get("thread").options.get("name").value
