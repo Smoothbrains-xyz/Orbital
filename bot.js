@@ -26,7 +26,8 @@ const newsapi = process.env.NEWS_API_KEY;
 // })
 client.once('ready', () => {
   // Register slash commands globally
-  client.application.commands.set(slashCommands);
+  //client.application.commands.set(slashCommands);
+  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -79,6 +80,9 @@ client.on("interaction", interaction => {
         break;
       case "qrcode":
         qrcodeSwitch(interaction);
+        break;
+      case "remind":
+        remind(interaction);
         break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
@@ -252,7 +256,8 @@ async function apod(interaction) {
 }
 
 async function iss(interaction) {
-  axios.get(`${urls.iss_position}`)
+  interaction.defer();
+  axios.get(`${urls.iss_location}`)
     .then(response => {
       data = response.data;
       const issEmbed = new Discord.MessageEmbed()
@@ -267,7 +272,7 @@ async function iss(interaction) {
         .then(response => {
           data = response.data;
           issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
-          interaction.reply({ embeds: [issEmbed] });
+          interaction.followUp({ embeds: [issEmbed] });
         });
     })
     .catch(console.error);
@@ -503,6 +508,68 @@ async function qrcode(isRead, interaction) {
 
     interaction.followUp({ embeds: [qrcodeCreateEmbed] });
   }
+}
+
+async function remind(interaction) {
+  if (interaction.options.get('amount').value <= 0) {
+    interaction.reply('Invalid amount!');
+    return;
+  }
+
+  let reason;
+  interaction.options.get('reason') ? reason = interaction.options.get('reason').value : reason = "Not specified."
+
+  let multiplier;
+  // Unit to millisecond conversion
+  switch (interaction.options.get('period').value) {
+    case "seconds":
+      multiplier = 1000;
+      break;
+    case "minutes":
+      multiplier = 60000;
+      break;
+    case "hours":
+      multiplier = 3600000;
+      break;
+    case "days":
+      multiplier = 86400000;
+      break;
+    case "weeks":
+      multiplier = 604800000;
+      break;
+    case "months":
+      multiplier = 2629800000;
+      break;
+    case "years":
+      multiplier = 31557600000;
+      break;
+  }
+
+  const totalMs = interaction.options.get('amount').value * multiplier;
+  const finalDate = new Date(Date.now() + totalMs);
+  const reminderOverviewEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Reminder Created")
+    .addField("User", `${interaction.user.tag}`)
+    .addField("Date", finalDate.toString())
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [reminderOverviewEmbed] });
+
+  setTimeout(() => {
+    const reminderEmbed = new Discord.MessageEmbed()
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+      .setTitle("Reminder")
+      .addField("User", `${interaction.user.tag}`)
+      .addField("Reason", `${reason}`)
+      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+      .setColor(`${embedInfo.color}`)
+      .setTimestamp();
+
+    interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
+  }, totalMs);
 }
 
 client.login(token);
