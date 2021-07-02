@@ -20,8 +20,14 @@ let embedInfo;
 
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
+const newsapi = process.env.NEWS_API_KEY;
+// client.on('message', () => {
 
+// })
 client.once('ready', () => {
+  // // Register slash commands globally
+  // client.application.commands.set(slashCommands);
+
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -106,118 +112,79 @@ async function space(interaction) {
 
 async function news(interaction) {
   const row = new Discord.MessageActionRow()
-			.addComponents(
-				new Discord.MessageSelectMenu()
-					.setCustomID('select')
-					.setPlaceholder('Nothing selected')
-					.addOptions([
-						{
-							label: 'Finance',
-							description: 'View US Finance News',
-							value: 'first_option',
-						},
-						{
-							label: 'Sports',
-							description: 'View US Sports News',
-							value: 'second_option',
-						},
-					]),
-			);
+      .addComponents(
+          new Discord.MessageSelectMenu()
+              .setCustomID('select')
+              .setPlaceholder('Nothing selected')
+              .addOptions([
+                  {
+                      label: 'US News',
+                      description: 'View US News',
+                      value: 'us-news',
+                  },
+                  {
+                      label: 'Finance',
+                      description: 'View US Finance News',
+                      value: 'finance',
+                  },
+                  {
+                      label: 'Sports',
+                      description: 'View US Sports News',
+                      value: 'sports',
+                  },
+              ]),
+      );
 
-		await interaction.reply({ content: 'News Options:', components: [row] });
-}
+  await interaction.reply({ content: 'News Options:', components: [row] });
 
-async function data(interaction) {
-  const uptimeDays = client.uptime / 86400000;
-  let serverCount;
-  await client.shard.fetchClientValues('guilds.cache.size')
-	.then(results => {
-		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
-	})
-	.catch(console.error);
-  const botInfoEmbed = new Discord.MessageEmbed()
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-    .setTitle("Orbital Info")
-    .addField(`Servers`, `${serverCount}`, true)
-    .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
-    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
-    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-    .setColor(`${embedInfo.color}`)
-    .setTimestamp();
-  interaction.reply({ embeds: [botInfoEmbed] });
-}
+  client.on('interaction', async interaction => {
+      if (!interaction.isSelectMenu()) return;
 
-async function info(interaction) {
-  switch (interaction.options.first().name) {
-    case "server":
-      serverInfo(interaction);
-      break;
-    // case "bot":
-    //   botInfo(interaction);
-    //   break;
-    case "member":
-      memberInfo(interaction);
-      break;
-    case "role":
-      roleInfo(interaction);
-      break;
-  }
-}
+      if (interaction.customID === 'select') {
+          await interaction.defer()
+          if (interaction.values[0] === "us-news") {
+          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d97d280008ad4692bc287045547077a3`
+          const results = await axios.get(url)
+          const info = results.data.articles;
+          const random = Math.floor(Math.random() * info.length);
+          const randObject = info[random];
+    if (randObject.urlToImage === null || !randObject.urlToImage) {
+            const newsEmbed = new Discord.MessageEmbed()
+                    .setTitle(`${randObject.title}`)
+                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                    .setDescription(`**Description**: \n${randObject.description}`)
+                    .addField("Country:", `United States of America`)
+                    .addField(`URL:`, `[Link](${randObject.url})`, true)
+                    .addField("Source:", `${randObject.source.name}`)
+                    .setColor(`${embedInfo.color}`)
+                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                    .setTimestamp();
 
-async function apod(interaction) {
-  axios.get(`${urls.apod}${nasaApiKey}`)
-    .then(response => {
-      data = response.data;
-      const apodEmbed = new Discord.MessageEmbed()
-        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setTitle(data.title)
-        .setDescription(data.explanation)
-        .addField('Copyright', data.copyright ? `©️ ${data.copyright}` : `None`, true)
-        .addField('Link', `[Click here!](${data.hdurl})`, true)
-        .setImage(data.hdurl)
-        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-        .setColor(`${embedInfo.color}`)
-        .setTimestamp();
+                  await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
+              // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}\n`, components: [] });
+          } else if (randObject.urlToImage) {
+            const newsEmbedMedia = new Discord.MessageEmbed()
+                    .setTitle(`${randObject.title}`)
+                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                    .setThumbnail(`${randObject.urlToImage}`)
+                    .setDescription(`**Description**: \n${randObject.description}`)
+                    .addField("Country:", `United States of America`)
+                    .addField(`URL:`, `[Link](${randObject.url})`, true)
+                    .addField("Source:", `${randObject.source.name}`)
+                    .setColor(`${embedInfo.color}`)
+                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                    .setTimestamp();
 
-      interaction.reply({ embeds: [apodEmbed]})
-        .then(console.log)
-	      .catch(console.error);
-    })
-    .catch(console.error);
-}
-
-async function iss(interaction) {
-  axios.get(`${urls.iss_position}`)
-    .then(response => {
-      data = response.data;
-      const issEmbed = new Discord.MessageEmbed()
-        .setTitle("The current location of the ISS!")
-        .setURL('https://spotthestation.nasa.gov/tracking_map.cfm')
-        .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
-        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-        .setColor("ffffff")
-        .setFooter(`Bot ID: ${client.user.id}`)
-        .setTimestamp();
-      axios.get(`${urls.iss_astros}`)
-        .then(response => {
-          data = response.data;
-          issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
-          interaction.reply({ embeds: [issEmbed] });
-        });
-    })
-    .catch(console.error);
-}
-
-async function help(interaction) {
-      const helpEmbed = new Discord.MessageEmbed()
-        .setTitle("Help Command • Orbital")
-        .setDescription("TODO")
-        .addField("Command List:", "TODO")
-        .setColor("ffffff")
-        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-        .setTimestamp();
-
-      interaction.reply({ embeds: [helpEmbed] });
+                    await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
+            // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}`, components: [] });
+        } else if (interaction.values[0] === "finance") {
+              await interaction.editReply({ content: 'Finance was Selected!', components: [] });
+          } else if (interaction.values[0] === "sports") {
+            await interaction.editReply({ content: 'Sports was Selected!', components: [] });
+        }
+      }
+    }
+  });
 }
 
 async function ping(interaction) {
