@@ -299,6 +299,7 @@ async function ping(interaction) {
 }
 
 async function epic(interaction, isEnhanced) {
+  interaction.defer();
   // If "enhanced" is false
   if (!isEnhanced) {
     axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
@@ -327,7 +328,7 @@ async function epic(interaction, isEnhanced) {
               .setLabel('Another!')
               .setStyle('SECONDARY');
 
-            interaction.reply({ embeds: [epicNaturalEmbed], components: [[anotherButton]] });
+            interaction.followUp({ embeds: [epicNaturalEmbed], components: [[anotherButton]] });
           });
       });
   // If "enhanced" is true
@@ -358,7 +359,7 @@ async function epic(interaction, isEnhanced) {
               .setLabel('Another!')
               .setStyle('SECONDARY');
 
-            interaction.reply({ embeds: [epicEnhancedEmbed], components: [[anotherButton]] });
+            interaction.followUp({ embeds: [epicEnhancedEmbed], components: [[anotherButton]] });
           });
       });
   }
