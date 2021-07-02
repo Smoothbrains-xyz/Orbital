@@ -64,24 +64,6 @@
             "type": 8,
             "name": "role",
             "description": "The role that the bot returns information about",
-    "name": "create",
-    "description": "Commands regarding thread creation",
-    "options": [
-      {
-        "type": 1,
-        "name": "thread",
-        "description": "Creates a public thread with options",
-        "options": [
-          {
-            "type": 3,
-            "name": "name",
-            "description": "What name would you like your thread to be?",
-            "required": true
-          },
-          {
-            "type": 3,
-            "name": "reason",
-            "description": "What is a reason for the creation of your thread?",
             "required": true
           }
         ]
@@ -195,6 +177,31 @@
         "name": "reason",
         "description": "The reason for the reminder",
         "required": false
+      }
+    ]
+  },
+  {
+    "name": "create",
+    "description": "Commands regarding thread creation",
+    "options": [
+      {
+        "type": 1,
+        "name": "thread",
+        "description": "Creates a public thread with options",
+        "options": [
+          {
+            "type": 3,
+            "name": "name",
+            "description": "What name would you like your thread to be?",
+            "required": true
+          },
+          {
+            "type": 3,
+            "name": "reason",
+            "description": "What is a reason for the creation of your thread?",
+            "required": true
+          }
+        ]
       }
     ]
   }
