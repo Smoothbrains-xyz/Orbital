@@ -25,9 +25,9 @@ const newsapi = process.env.NEWS_API_KEY;
 
 // })
 client.once('ready', () => {
-  // Register slash commands globally
-  //client.application.commands.set(slashCommands);
-  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
+  // // Register slash commands globally (set them every time you change slashcommnads.json)
+  client.application.commands.set(slashCommands)
+
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -35,7 +35,7 @@ client.once('ready', () => {
   embedInfo = {
     color: "ffffff",
     footer: [
-      `${client.user.tag}`,
+      `• ${client.user.tag}`,
       `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`
     ]
   }
@@ -83,6 +83,9 @@ client.on("interaction", interaction => {
         break;
       case "remind":
         remind(interaction);
+        break;
+      case "create":
+        create(interaction);
         break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
@@ -152,6 +155,13 @@ async function info(interaction) {
       break;
     case "role":
       roleInfo(interaction);
+  } // End interaction command name switch
+});
+
+async function create(interaction) {
+  switch(interaction.options.first().name) {
+    case "thread":
+      thread(interaction);
       break;
   }
 }
@@ -288,6 +298,26 @@ async function help(interaction) {
         .setTimestamp();
 
       interaction.reply({ embeds: [helpEmbed] });
+async function thread(interaction) {
+  const wait = require('util').promisify(setTimeout);
+  const name = interaction.options.get("thread").options.get("name").value
+  const reason = interaction.options.get("thread").options.get("reason").value
+  const author = `<@${interaction.member.user.id}>`
+  const chan = await interaction.channel.threads.create({name: name, autoArchiveDuration: 1440, reason: reason,}).catch(console.error)
+  chan.members.add(interaction.member, "Created Thread")
+
+  const threadEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Thread Creation Status")
+    .setDescription(`Successfully created Thread: __**${name}**__ by ${author}\n\nReason for thread creation: ${reason}\n\nThread will auto archive after no activity in 24 Hours`)
+    .setColor(`${embedInfo.color}`)
+    .setFooter(`This message will be autodeleted in 30 seconds ${embedInfo.footer[0]}`, embedInfo.footer[1])
+    .setTimestamp();
+
+  interaction.reply({ embeds: [threadEmbed] });
+  await wait(30000) //Waits for 30 seconds
+  interaction.deleteReply()
+  .catch(console.error);
 }
 
 async function ping(interaction) {
