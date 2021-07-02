@@ -26,8 +26,8 @@ const newsapi = process.env.NEWS_API_KEY;
 // })
 client.once('ready', () => {
   // Register slash commands globally
-  client.application.commands.set(slashCommands);
-
+  client.application.commands.set([]);
+  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -78,6 +78,9 @@ client.on("interaction", interaction => {
       case "wolfram":
         wolfram(interaction);
         break;
+      case "qrcode":
+        qrcodeSwitch(interaction);
+        break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
     switch(interaction.customID) {
@@ -90,6 +93,17 @@ client.on("interaction", interaction => {
     }
   }
 });
+
+async function qrcodeSwitch(interaction) {
+  switch(interaction.options.first().name) {
+    case "read":
+      qrcode(true, interaction);
+      break;
+    case "create":
+      qrcode(false, interaction);
+      break;
+  }
+}
 
 async function space(interaction) {
   switch(interaction.options.first().name) {
@@ -405,6 +419,34 @@ async function wolfram(interaction) {
         });
     })
     .catch(console.error)
+}
+
+async function qrcode(isRead, interaction) {
+  interaction.defer();
+  const qrcodeData = interaction.options.first().options.first().value;
+  let qrcodeURL;
+  isRead ? qrcodeURL = urls.qrcode_read : qrcodeURL = urls.qrcode_create;
+
+  if (isRead) {
+    await axios.get(`${qrcodeURL}${qrcodeData}`)
+      .then(response => {
+        data = response.data;
+        if (data[0].symbol[0].error){
+          interaction.followUp({ content: data[0].symbol[0].error.charAt(0).toUpperCase() + data[0].symbol[0].error.slice(1) });
+        } else {
+          interaction.followUp({ content: data[0].symbol[0].data });
+        }
+      })
+      .catch(error => interaction.followUp("Malformed URL"));
+  } else {
+    const qrcodeCreateEmbed = new Discord.MessageEmbed()
+      .setImage(`${qrcodeURL}${qrcodeData}`)
+      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+      .setColor(`${embedInfo.color}`)
+      .setTimestamp();
+
+    interaction.followUp({ embeds: [qrcodeCreateEmbed] });
+  }
 }
 
 client.login(token);

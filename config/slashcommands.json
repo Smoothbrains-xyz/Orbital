@@ -93,5 +93,37 @@
         "required": true
       }
     ]
+  },
+  {
+    "name": "qrcode",
+    "description": "Commands for creating and interpreting QR codes",
+    "options": [
+      {
+        "type": 1,
+        "name": "create",
+        "description": "The command to encode data into a QR code",
+        "options": [
+          {
+            "type": 3,
+            "name": "data",
+            "description": "The data to convert into a QR code format",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "name": "read",
+        "description": "The command to decode data from a QR code",
+        "options": [
+          {
+            "type": 3,
+            "name": "url",
+            "description": "The URL of the QR code image to decode",
+            "required": true
+          }
+        ]
+      }
+    ]
   }
 ]
