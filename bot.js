@@ -156,7 +156,7 @@ async function info(interaction) {
     case "role":
       roleInfo(interaction);
   } // End interaction command name switch
-});
+}
 
 async function create(interaction) {
   switch(interaction.options.first().name) {
