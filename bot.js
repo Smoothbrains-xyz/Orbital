@@ -18,6 +18,7 @@ let embedInfo;
 
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
+const newsapi = process.env.NEWS_API_KEY;
 // client.on('message', () => {
   
 // })
@@ -70,6 +71,11 @@ async function news(interaction) {
               .setPlaceholder('Nothing selected')
               .addOptions([
                   {
+                      label: 'US News',
+                      description: 'View US News',
+                      value: 'us-news',
+                  },
+                  {
                       label: 'Finance',
                       description: 'View US Finance News',
                       value: 'finance',
@@ -89,12 +95,48 @@ async function news(interaction) {
 
       if (interaction.customID === 'select') {
           await interaction.defer()
-          if (interaction.values[0] === "finance") {
+          if (interaction.values[0] === "us-news") {
+          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d97d280008ad4692bc287045547077a3`     
+          const results = await axios.get(url)
+          const info = results.data.articles;
+          const random = Math.floor(Math.random() * info.length);
+          const randObject = info[random];
+    if (randObject.urlToImage === null || !randObject.urlToImage) {
+            const newsEmbed = new Discord.MessageEmbed()
+                    .setTitle(`${randObject.title}`)
+                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                    .setDescription(`**Description**: \n${randObject.description}`)
+                    .addField("Country:", `United States of America`)
+                    .addField(`URL:`, `[Link](${randObject.url})`, true)
+                    .addField("Source:", `${randObject.source.name}`)
+                    .setColor(`${embedInfo.color}`)
+                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                    .setTimestamp();
+
+                  await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
+              // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}\n`, components: [] });
+          } else if (randObject.urlToImage) {
+            const newsEmbedMedia = new Discord.MessageEmbed()
+                    .setTitle(`${randObject.title}`)
+                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                    .setThumbnail(`${randObject.urlToImage}`)
+                    .setDescription(`**Description**: \n${randObject.description}`)
+                    .addField("Country:", `United States of America`)
+                    .addField(`URL:`, `[Link](${randObject.url})`, true)
+                    .addField("Source:", `${randObject.source.name}`)
+                    .setColor(`${embedInfo.color}`)
+                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                    .setTimestamp();
+
+                    await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
+            // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}`, components: [] });
+        } else if (interaction.values[0] === "finance") {
               await interaction.editReply({ content: 'Finance was Selected!', components: [] });
           } else if (interaction.values[0] === "sports") {
-              await interaction.editReply({ content: 'Sports was Selected!', components: [] });
-          }
+            await interaction.editReply({ content: 'Sports was Selected!', components: [] });
+        } 
       }
+    }
   });
 }
 
