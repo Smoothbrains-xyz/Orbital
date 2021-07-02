@@ -105,6 +105,20 @@ async function space(interaction) {
   }
 }
 
+async function info(interaction) {
+  switch(interaction.options.first().name) {
+    case "server":
+      serverInfo(interaction);
+      break;
+    case "member":
+      memberInfo(interaction);
+      break;
+    case "role":
+      roleInfo(interaction);
+      break;
+  }
+}
+
 async function news(interaction) {
   const row = new Discord.MessageActionRow()
       .addComponents(
