@@ -4,6 +4,183 @@
     "description": "Returns information regarding US News"
   },
   {
+    "name": "space",
+    "description": "Commands regarding astronomy",
+    "options": [
+      {
+        "type": 1,
+        "name": "apod",
+        "description": "NASA's Astronomy Picture of the Day"
+      },
+      {
+        "type": 1,
+        "name": "iss",
+        "description": "Displays the current location of the International Space Station as well as its inhabitants"
+      },
+      {
+        "type": 1,
+        "name": "epic",
+        "description": "Returns an image collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
+        "options": [
+          {
+            "type": 5,
+            "name": "enhanced",
+            "description": "Determines whether to pull and enhanced or raw image",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "info",
+    "description": "Commands that return useful information",
+    "options": [
+      {
+        "type": 1,
+        "name": "server",
+        "description": "Returns information for the server, such as the icon, member count, and roles"
+      },
+
+      {
+        "type": 1,
+        "name": "member",
+        "description": "Returns information about a given server member, such as their icon, roles, and permissions",
+        "options": [
+          {
+            "type": 6,
+            "name": "member",
+            "description": "The member that the bot returns information about",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "name": "role",
+        "description": "Returns information about a given server role, such as its perms, color, and if it is mentionable",
+        "options": [
+          {
+            "type": 8,
+            "name": "role",
+            "description": "The role that the bot returns information about",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "help",
+    "description": "A utility command for help and a list of all available commands"
+  },
+  {
+    "name": "data",
+    "description": "Returns information for the Orbital bot, such as the server and shard count"
+  },
+  {
+    "name": "ping",
+    "description": "A utility command to show the client and API latency"
+  },
+  {
+    "name": "wolfram",
+    "description": "A utility command that utilizes the Wolfram|Alpha API to help with any aspect of science",
+    "options": [
+      {
+        "type": 3,
+        "name": "query",
+        "description": "The query to submit to the Wolfram|Alpha API",
+        "required": true
+      }
+    ]
+  },
+  {
+    "name": "qrcode",
+    "description": "Commands for creating and interpreting QR codes",
+    "options": [
+      {
+        "type": 1,
+        "name": "create",
+        "description": "The command to encode data into a QR code",
+        "options": [
+          {
+            "type": 3,
+            "name": "data",
+            "description": "The data to convert into a QR code format",
+            "required": true
+          }
+        ]
+      },
+      {
+        "type": 1,
+        "name": "read",
+        "description": "The command to decode data from a QR code",
+        "options": [
+          {
+            "type": 3,
+            "name": "url",
+            "description": "The URL of the QR code image to decode",
+            "required": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "remind",
+    "description": "A feature to remind the user of something after a given period of time",
+    "options": [
+      {
+        "type": 4,
+        "name": "amount",
+        "description": "The amount of the unit of time to be passed",
+        "required": true
+      },
+      {
+        "type": 3,
+        "name": "period",
+        "description": "The unit of time to be passed",
+        "required": true,
+        "choices": [
+          {
+            "name": "seconds",
+            "value": "seconds"
+          },
+          {
+            "name": "minutes",
+            "value": "minutes"
+          },
+          {
+            "name": "hours",
+            "value": "hours"
+          },
+          {
+            "name": "days",
+            "value": "days"
+          },
+          {
+            "name": "weeks",
+            "value": "weeks"
+          },
+          {
+            "name": "months",
+            "value": "months"
+          },
+          {
+            "name": "years",
+            "value": "years"
+          }
+        ]
+      },
+      {
+        "type": 3,
+        "name": "reason",
+        "description": "The reason for the reminder",
+        "required": false
+      }
+    ]
+  },
+  {
     "name": "create",
     "description": "Commands regarding thread creation",
     "options": [
@@ -27,9 +204,5 @@
         ]
       }
     ]
-  },
-  {
-    "name": "ping",
-    "description": "A utility command to show the client and API latency"
   }
 ]

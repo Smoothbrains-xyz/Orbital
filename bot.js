@@ -11,6 +11,8 @@ const client = new Discord.Client({
 });
 
 const axios = require('axios');
+const parseString = require('xml2js').parseString;
+require('dotenv').config();
 
 const urls = require('./config/urls.json');
 const slashCommands = require('./config/slashcommands.json')
@@ -19,7 +21,16 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
+<<<<<<< HEAD
 const ownerarray = ['756289468285190294', '745063586422063214'];
+=======
+// client.on('message', () => {
+
+// })
+client.once('ready', () => {
+  // // Register slash commands globally (set them every time you change slashcommnads.json)
+  client.application.commands.set(slashCommands)
+>>>>>>> 1b08202396f643d33545ec03414b2b0f166091d1
 
 client.once('ready', () => {
   // Log bot tag to console on start
@@ -56,21 +67,111 @@ client.on('message', async message => {
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
-  if (!interaction.isCommand()) return;
+  if (!interaction.isCommand() && !interaction.isButton()) return;
 
-  // Switch between categories and uncategorized commands
-  switch (interaction.commandName) {
+  if (interaction.isCommand()) {
+    // Switch between categories and uncategorized commands
+    switch(interaction.commandName) {
+      case "space":
+        space(interaction);
+        break;
       case "news":
-          news(interaction);
-          break;
+        news(interaction);
+        break;
+      case "info":
+        info(interaction);
+        break;
+      case "help":
+        help(interaction);
+        break;
       case "ping":
-          ping(interaction);
-          break;
+        ping(interaction);
+        break;
+      case "data":
+        data(interaction);
+        break;
+      case "wolfram":
+        wolfram(interaction);
+        break;
+      case "qrcode":
+        qrcodeSwitch(interaction);
+        break;
+      case "remind":
+        remind(interaction);
+        break;
       case "create":
         create(interaction);
         break;
-  } // End interaction command name switch
+    } // End interaction command name switch
+  } else if (interaction.isButton()) {
+    switch(interaction.customID) {
+      case "another-natural":
+        epic(interaction, false);
+        break;
+      case "another-enhanced":
+        epic(interaction, true);
+        break;
+    }
+  }
 });
+
+async function qrcodeSwitch(interaction) {
+  switch(interaction.options.first().name) {
+    case "read":
+      qrcode(true, interaction);
+      break;
+    case "create":
+      qrcode(false, interaction);
+      break;
+  }
+}
+
+async function space(interaction) {
+  switch(interaction.options.first().name) {
+    case "apod":
+      apod(interaction);
+      break;
+    case "iss":
+      iss(interaction);
+      break;
+    case "epic":
+      epic(interaction, interaction.options.first().options.first().value);
+      break;
+  }
+}
+
+async function data(interaction) {
+  const uptimeDays = client.uptime / 86400000;
+  let serverCount;
+  await client.shard.fetchClientValues('guilds.cache.size')
+	.then(results => {
+		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
+	})
+	.catch(console.error);
+  const botInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Orbital Info")
+    .addField(`Servers`, `${serverCount}`, true)
+    .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
+    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+  interaction.reply({ embeds: [botInfoEmbed] });
+}
+
+async function info(interaction) {
+  switch(interaction.options.first().name) {
+    case "server":
+      serverInfo(interaction);
+      break;
+    case "member":
+      memberInfo(interaction);
+      break;
+    case "role":
+      roleInfo(interaction);
+  } // End interaction command name switch
+}
 
 async function create(interaction) {
   switch(interaction.options.first().name) {
@@ -113,7 +214,7 @@ async function news(interaction) {
       if (interaction.customID === 'select') {
           await interaction.defer()
           if (interaction.values[0] === "us-news") {
-          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d97d280008ad4692bc287045547077a3`     
+          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d97d280008ad4692bc287045547077a3`
           const results = await axios.get(url)
           const info = results.data.articles;
           const random = Math.floor(Math.random() * info.length);
@@ -151,10 +252,67 @@ async function news(interaction) {
               await interaction.editReply({ content: 'Finance was Selected!', components: [] });
           } else if (interaction.values[0] === "sports") {
             await interaction.editReply({ content: 'Sports was Selected!', components: [] });
-        } 
+        }
       }
     }
   });
+}
+
+async function apod(interaction) {
+  axios.get(`${urls.apod}${nasaApiKey}`)
+    .then(response => {
+      data = response.data;
+      const apodEmbed = new Discord.MessageEmbed()
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setTitle(data.title)
+        .setDescription(data.explanation)
+        .addField('Copyright', data.copyright ? `©️ ${data.copyright}` : `None`, true)
+        .addField('Link', `[Click here!](${data.hdurl})`, true)
+        .setImage(data.hdurl)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setColor(`${embedInfo.color}`)
+        .setTimestamp();
+
+      interaction.reply({ embeds: [apodEmbed]})
+        .then(console.log)
+	      .catch(console.error);
+    })
+    .catch(console.error);
+}
+
+async function iss(interaction) {
+  interaction.defer();
+  axios.get(`${urls.iss_location}`)
+    .then(response => {
+      data = response.data;
+      const issEmbed = new Discord.MessageEmbed()
+        .setTitle("The current location of the ISS!")
+        .setURL('https://spotthestation.nasa.gov/tracking_map.cfm')
+        .setImage(`https://api.mapbox.com/styles/v1/mapbox/light-v10/static/pin-s+000(${data.iss_position.longitude},${data.iss_position.latitude})/-87.0186,20,1/1000x1000?access_token=pk.eyJ1IjoiYWRhd2Vzb21lZ3V5IiwiYSI6ImNrbGpuaWdrYzJ0bGYydXBja2xsNmd2YTcifQ.Ude0UFOf9lFcQ-3BANWY5A`)
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setColor("ffffff")
+        .setFooter(`Bot ID: ${client.user.id}`)
+        .setTimestamp();
+      axios.get(`${urls.iss_astros}`)
+        .then(response => {
+          data = response.data;
+          issEmbed.addField(`Astronauts`, `${data.people.map(e => e.name).join(" • ")}`);
+          interaction.followUp({ embeds: [issEmbed] });
+        });
+    })
+    .catch(console.error);
+}
+
+async function help(interaction) {
+      const helpEmbed = new Discord.MessageEmbed()
+        .setTitle("Help Command • Orbital")
+        .setDescription("TODO")
+        .addField("Command List:", "TODO")
+        .setColor("ffffff")
+        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+        .setTimestamp();
+
+      interaction.reply({ embeds: [helpEmbed] });
 }
 
 async function thread(interaction) {
@@ -193,6 +351,275 @@ async function ping(interaction) {
     .setTimestamp();
 
   interaction.reply({ embeds: [pingEmbed] });
+}
+
+async function epic(interaction, isEnhanced) {
+  interaction.defer();
+  // If "enhanced" is false
+  if (!isEnhanced) {
+    axios.get(`${urls.epic_natural_date}${nasaApiKey}`)
+      .then(response => {
+        data = response.data;
+        randomDate = data[Math.floor(Math.random() * data.length)].date;
+        axios.get(`${urls.epic_natural_image}${randomDate}?api_key=${nasaApiKey}`)
+          .then(response => {
+            data = response.data;
+            randomImage = data[Math.floor(Math.random() * data.length)];
+            randomImageURL = `${urls.epic_natural_archive}${randomDate.replace(/-/g, '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
+            const epicNaturalEmbed = new Discord.MessageEmbed()
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+              .setTitle("NASA Earth Polychromatic Imaging Camera (EPIC)")
+              .setDescription(randomImage.caption)
+              .addField("DSCOVR Position", `\`X\`: ${Math.trunc(randomImage.dscovr_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.dscovr_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.dscovr_j2000_position.z)}`, true)
+              .addField("Solar Position", `\`X\`:${Math.trunc(randomImage.sun_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.sun_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.sun_j2000_position.z)}`, true)
+              .addField("Lunar Position", `\`X\`:${Math.trunc(randomImage.lunar_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.lunar_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.lunar_j2000_position.z)}`, true)
+              .setImage(randomImageURL)
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setColor(`${embedInfo.color}`)
+              .setTimestamp();
+
+            const anotherButton = new Discord.MessageButton()
+              .setCustomID('another-natural')
+              .setLabel('Another!')
+              .setStyle('SECONDARY');
+
+            interaction.followUp({ embeds: [epicNaturalEmbed], components: [[anotherButton]] });
+          });
+      });
+  // If "enhanced" is true
+  } else if (isEnhanced) {
+    axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
+      .then(response => {
+        data = response.data;
+        randomDate = data[Math.floor(Math.random() * data.length)].date;
+        axios.get(`${urls.epic_enhanced_image}${randomDate}?api_key=${nasaApiKey}`)
+          .then(response => {
+            data = response.data;
+            randomImage = data[Math.floor(Math.random() * data.length)];
+            randomImageURL = `${urls.epic_enhanced_archive}${randomDate.replace(/-/g, '/')}/png/${randomImage.image}.png?api_key=${nasaApiKey}`;
+            const epicEnhancedEmbed = new Discord.MessageEmbed()
+              .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+              .setTitle("NASA Earth Polychromatic Imaging Camera (EPIC)")
+              .setDescription(randomImage.caption)
+              .addField("DSCOVR Position", `\`X\`: ${Math.trunc(randomImage.dscovr_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.dscovr_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.dscovr_j2000_position.z)}`, true)
+              .addField("Solar Position", `\`X\`:${Math.trunc(randomImage.sun_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.sun_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.sun_j2000_position.z)}`, true)
+              .addField("Lunar Position", `\`X\`:${Math.trunc(randomImage.lunar_j2000_position.x)}\n\`Y\`: ${Math.trunc(randomImage.lunar_j2000_position.y)}\n\`Z\`: ${Math.trunc(randomImage.lunar_j2000_position.z)}`, true)
+              .setImage(randomImageURL)
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setColor(`${embedInfo.color}`)
+              .setTimestamp();
+
+            const anotherButton = new Discord.MessageButton()
+              .setCustomID('another-enhanced')
+              .setLabel('Another!')
+              .setStyle('SECONDARY');
+
+            interaction.followUp({ embeds: [epicEnhancedEmbed], components: [[anotherButton]] });
+          });
+      });
+  }
+}
+
+async function serverInfo(interaction) {
+  const guild = interaction.guild;
+  await guild.members.fetch();
+  await guild.roles.fetch();
+  const textChannelCount = guild.channels.cache.filter(c => c.type === 'text').size;
+  const voiceChannelCount = guild.channels.cache.filter(c => c.type === 'voice').size;
+  const categoryChannelCount = guild.channels.cache.filter(c => c.type === 'category').size;
+  const numHumans = guild.members.cache.filter(member => !member.user.bot).size;
+  const numBots = guild.members.cache.filter(member => member.user.bot).size;
+  const numRoles = guild.roles.cache.size;
+  const numOnline = guild.members.cache.filter(member => member.user.presence.status === "online" && !member.user.bot).size;
+  const numOffline = guild.members.cache.filter(member => member.user.presence.status === "offline" && !member.user.bot).size;
+  const numAway = guild.members.cache.filter(member => member.user.presence.status === "idle" && !member.user.bot).size;
+  const numDND = guild.members.cache.filter(member => member.user.presence.status === "dnd" && !member.user.bot).size;
+  const serverInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle(`**${guild.name}** Info`)
+    .addField("Owner", `<@${guild.ownerID}>`, true)
+    //.addField("Region", guild.region, true)
+    .addField("Verification Level", guild.verificationLevel, true)
+    .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
+    .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
+    .addField("Roles", `${numRoles}`)
+    .addField("Created", `${new Date(guild.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`)
+    .addField("User Statuses", `🟦 • ${numOnline} online\n\n🟧 • ${numAway} away\n\n⬛ • ${numOffline} offline\n\n🟥 • ${numDND} DND`)
+    .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+  interaction.reply({ embeds: [serverInfoEmbed] })
+}
+
+async function memberInfo(interaction) {
+  const member = interaction.options.first().options.first().member;
+
+  const memberInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(member.user.tag, member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .addField("Roles", member.roles.cache.map(r => `${r}`).join(' • '))
+    .addField("Permissions", member.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
+    .addField("Joined at", `${new Date(member.joinedTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`, true)
+    .addField("Account created", `${new Date(member.user.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`, true)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+
+  interaction.reply({ embeds: [memberInfoEmbed] });
+}
+
+async function roleInfo(interaction) {
+  const role = interaction.options.first().options.first().role;
+
+  const roleInfoEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle(`**${role.name}** Info`)
+    .addField("Permissions", role.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
+    .addField("Mentionable", `${role.mentionable}`)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+
+  interaction.reply({ embeds: [roleInfoEmbed] });
+}
+
+async function wolfram(interaction) {
+  interaction.defer();
+  await axios.get(`http://api.wolframalpha.com/v2/query?input=${interaction.options.first().value}&appid=${process.env.WOLFRAM_API_KEY}`)
+    .then(async response => {
+        data = response.data;
+        parseString(data, async (err, result) => {
+          const wolframEmbed = new Discord.MessageEmbed()
+            .setTitle(`Results for \`${interaction.options.first().value}\``)
+            .setColor(embedInfo.color);
+          const resultButtons = [];
+          if (result.queryresult.pod) {
+            result.queryresult.pod.forEach(p => {
+              const button = new Discord.MessageButton()
+                .setCustomID(p.$.title)
+                .setLabel(p.$.title)
+                .setStyle('SECONDARY');
+              resultButtons.push(button);
+            });
+            resultButtons.splice(5)
+            const interactionMessage = await interaction.followUp({ embeds: [wolframEmbed], components: [resultButtons] });
+
+            const filter = i => i.message.id === interactionMessage.id;
+
+            const collector = interaction.channel.createMessageComponentInteractionCollector({ filter });
+
+            collector.on('collect', async i => {
+              result.queryresult.pod.forEach(p => {
+                if (p.$.title === i.customID) {
+                  const embeds = [];
+                  p.subpod.forEach(s => {
+                    const embed = new Discord.MessageEmbed()
+                      .setTitle(i.customID)
+                      .setImage(s.img[0].$.src)
+                      .setColor(embedInfo.color);
+                    embeds.push(embed);
+                  });
+                  i.reply({ embeds: embeds });
+                }
+              });
+            });
+          } else {
+            interaction.followUp("No results!")
+          }
+        });
+    })
+    .catch(console.error)
+}
+
+async function qrcode(isRead, interaction) {
+  interaction.defer();
+  const qrcodeData = interaction.options.first().options.first().value;
+  let qrcodeURL;
+  isRead ? qrcodeURL = urls.qrcode_read : qrcodeURL = urls.qrcode_create;
+
+  if (isRead) {
+    await axios.get(`${qrcodeURL}${qrcodeData}`)
+      .then(response => {
+        data = response.data;
+        if (data[0].symbol[0].error){
+          interaction.followUp({ content: data[0].symbol[0].error.charAt(0).toUpperCase() + data[0].symbol[0].error.slice(1) });
+        } else {
+          interaction.followUp({ content: data[0].symbol[0].data });
+        }
+      })
+      .catch(error => interaction.followUp("Malformed URL"));
+  } else {
+    const qrcodeCreateEmbed = new Discord.MessageEmbed()
+      .setImage(`${qrcodeURL}${qrcodeData}`)
+      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+      .setColor(`${embedInfo.color}`)
+      .setTimestamp();
+
+    interaction.followUp({ embeds: [qrcodeCreateEmbed] });
+  }
+}
+
+async function remind(interaction) {
+  if (interaction.options.get('amount').value <= 0) {
+    interaction.reply('Invalid amount!');
+    return;
+  }
+
+  let reason;
+  interaction.options.get('reason') ? reason = interaction.options.get('reason').value : reason = "Not specified."
+
+  let multiplier;
+  // Unit to millisecond conversion
+  switch (interaction.options.get('period').value) {
+    case "seconds":
+      multiplier = 1000;
+      break;
+    case "minutes":
+      multiplier = 60000;
+      break;
+    case "hours":
+      multiplier = 3600000;
+      break;
+    case "days":
+      multiplier = 86400000;
+      break;
+    case "weeks":
+      multiplier = 604800000;
+      break;
+    case "months":
+      multiplier = 2629800000;
+      break;
+    case "years":
+      multiplier = 31557600000;
+      break;
+  }
+
+  const totalMs = interaction.options.get('amount').value * multiplier;
+  const finalDate = new Date(Date.now() + totalMs);
+  const reminderOverviewEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+    .setTitle("Reminder Created")
+    .addField("User", `${interaction.user.tag}`)
+    .addField("Date", finalDate.toString())
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setColor(`${embedInfo.color}`)
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [reminderOverviewEmbed] });
+
+  setTimeout(() => {
+    const reminderEmbed = new Discord.MessageEmbed()
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+      .setTitle("Reminder")
+      .addField("User", `${interaction.user.tag}`)
+      .addField("Reason", `${reason}`)
+      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+      .setColor(`${embedInfo.color}`)
+      .setTimestamp();
+
+    interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
+  }, totalMs);
 }
 
 client.login(token);
