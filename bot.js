@@ -88,6 +88,9 @@ client.on("interaction", interaction => {
       case "create":
         create(interaction);
         break;
+      case "test":
+        test(interaction);
+        break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
     switch(interaction.customID) {
@@ -358,6 +361,15 @@ async function ping(interaction) {
     .setTimestamp();
 
   interaction.reply({ embeds: [pingEmbed] });
+}
+
+async function test(interaction) {
+  const testEmbed = new Discord.MessageEmbed()
+    .setAuthor(`Your name is ${interaction.user.tag} 😈`)
+    .setColor(`${embedInfo.color}`)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+
+  interaction.reply({ embeds: [testEmbed] });
 }
 
 async function epic(interaction, isEnhanced) {

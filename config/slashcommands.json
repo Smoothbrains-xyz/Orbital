@@ -208,5 +208,9 @@
         ]
       }
     ]
+  },
+  {
+    "name": "test",
+    "description": "A very unsmart is learning how to make a new command."
   }
 ]
