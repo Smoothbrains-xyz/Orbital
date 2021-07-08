@@ -21,16 +21,7 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-<<<<<<< HEAD
 const ownerarray = ['756289468285190294', '745063586422063214'];
-=======
-// client.on('message', () => {
-
-// })
-client.once('ready', () => {
-  // // Register slash commands globally (set them every time you change slashcommnads.json)
-  client.application.commands.set(slashCommands)
->>>>>>> 1b08202396f643d33545ec03414b2b0f166091d1
 
 client.once('ready', () => {
   // Log bot tag to console on start
@@ -338,6 +329,7 @@ async function thread(interaction) {
   .catch(console.error);
   } else {
     return interaction.reply("You do not have access to thread creation. Please make sure you have MANAGE_CHANNELS Permission");
+  }
 }
 
 async function ping(interaction) {
