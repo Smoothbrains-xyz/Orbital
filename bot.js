@@ -12,6 +12,7 @@ const client = new Discord.Client({
 
 const axios = require('axios');
 const parseString = require('xml2js').parseString;
+const gitlog = require("gitlog").default;
 require('dotenv').config();
 
 const urls = require('./config/urls.json');
@@ -155,7 +156,31 @@ async function info(interaction) {
       break;
     case "role":
       roleInfo(interaction);
+    case "changelog":
+      changelog(interaction);
+      break;
   } // End interaction command name switch
+}
+
+async function changelog(interaction) {
+  const commits = gitlog({
+    repo: __dirname,
+    number: 5,
+    fields: ["hash", "abbrevHash", "subject", "authorName", "authorDateRel"],
+  });
+
+  const changelogEmbed = new Discord.MessageEmbed()
+    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setTitle("Changelog")
+    .setColor(`${embedInfo.color}`)
+    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+    .setTimestamp();
+
+  commits.forEach(commit => {
+    changelogEmbed.addField(commit.abbrevHash, `> \`Hash:\`${commit.hash}\n> \`Subject:\`${commit.subject}\n> \`Author:\`${commit.authorName}\n> \`Date:\`${commit.authorDateRel}\n> \`Link\`: [GitHub](https://github.com/ADawesomeguy/AwesomeSciBo/commit/${commit.hash})\n`);
+  });
+
+  interaction.reply({ embeds: [changelogEmbed] });
 }
 
 async function create(interaction) {
