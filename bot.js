@@ -180,7 +180,7 @@ async function changelog(interaction) {
     changelogEmbed.addField(commit.abbrevHash, `> \`Hash:\`${commit.hash}\n> \`Subject:\`${commit.subject}\n> \`Author:\`${commit.authorName}\n> \`Date:\`${commit.authorDateRel}\n> \`Link\`: [GitHub](https://github.com/ADawesomeguy/AwesomeSciBo/commit/${commit.hash})\n`);
   });
 
-  interaction.reply(changelogEmbed);
+  interaction.reply({ embeds: [changelogEmbed] });
 }
 
 async function create(interaction) {
