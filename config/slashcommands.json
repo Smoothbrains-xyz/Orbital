@@ -41,7 +41,6 @@
         "name": "server",
         "description": "Returns information for the server, such as the icon, member count, and roles"
       },
-
       {
         "type": 1,
         "name": "member",
@@ -67,6 +66,11 @@
             "required": true
           }
         ]
+      },
+      {
+        "type": 1,
+        "name": "changelog",
+        "description": "Lists the most recent git commits, their messages, and a link to the GitHub diff"
       }
     ]
   },
