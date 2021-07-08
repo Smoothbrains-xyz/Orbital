@@ -19,13 +19,9 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-// client.on('message', () => {
-  
-// })
-client.once('ready', () => {
-  // // Register slash commands globally (set them every time you change slashcommnads.json)
-  // client.application.commands.set(slashCommands)
+const ownerarray = ['756289468285190294', '745063586422063214'];
 
+client.once('ready', () => {
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -46,6 +42,16 @@ client.once('ready', () => {
       url: "https://github.com/ADawesomeguy/nasa-bot"
     }
   ]});
+});
+
+client.on('message', async message => {
+    if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
+      message.channel.send("Updating slash commands...")
+      // Register slash commands globally (set them every time you change slashcommnads.json)
+      await client.application.commands.set(slashCommands.then(message.channel.send("Slash commands are up to date :white_check_mark:"))).catch(console.error)
+    } else {
+      return;
+    }
 });
 
 client.on("interaction", interaction => {
@@ -152,6 +158,7 @@ async function news(interaction) {
 }
 
 async function thread(interaction) {
+  if (!interaction.use.permissions.has("MANAGE_CHANNELS")) {
   const wait = require('util').promisify(setTimeout);
   const name = interaction.options.get("thread").options.get("name").value
   const reason = interaction.options.get("thread").options.get("reason").value
@@ -171,6 +178,8 @@ async function thread(interaction) {
   await wait(30000) //Waits for 30 seconds
   interaction.deleteReply()
   .catch(console.error);
+  } else {
+    return interaction.reply("You do not have access to thread creation. Please make sure you have MANAGE_CHANNELS Permission");
 }
 
 async function ping(interaction) {
