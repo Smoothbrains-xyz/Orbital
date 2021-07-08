@@ -16,6 +16,7 @@ const gitlog = require("gitlog").default;
 require('dotenv').config();
 
 const urls = require('./config/urls.json');
+const emojis = require('./config/emojis.json');
 const slashCommands = require('./config/slashcommands.json')
 let embedInfo;
 
@@ -366,6 +367,12 @@ async function ping(interaction) {
 async function test(interaction) {
   const testEmbed = new Discord.MessageEmbed()
     .setAuthor(`Your name is ${interaction.user.tag} 😈`)
+    .setDescription(
+      'Emojis:',
+      emojis.sun,
+      emojis.moon,
+      emojis.earth,
+    )
     .setColor(`${embedInfo.color}`)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
 
