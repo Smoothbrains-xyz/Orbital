@@ -210,14 +210,19 @@ async function news(interaction) {
                       value: 'us-news',
                   },
                   {
-                      label: 'Finance',
-                      description: 'View US Finance News',
-                      value: 'finance',
+                      label: 'Stocks',
+                      description: 'View News Related to Stocks',
+                      value: 'stocks',
                   },
                   {
                       label: 'Sports',
                       description: 'View US Sports News',
                       value: 'sports',
+                  },
+                  {
+                    label: 'Custom Search (PREMIUM ONLY)',
+                    description: 'Search a topic and find News articles about it',
+                    value: 'custom',
                   },
               ]),
       );
