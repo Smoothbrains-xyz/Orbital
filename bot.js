@@ -11,6 +11,7 @@ const client = new Discord.Client({
 });
 
 const axios = require('axios');
+const wait = require('util').promisify(setTimeout);
 const parseString = require('xml2js').parseString;
 const gitlog = require("gitlog").default;
 require('dotenv').config();
@@ -22,7 +23,7 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-const ownerarray = ['756289468285190294', '745063586422063214'];
+const ownerarray = ['756289468285190294', '745063586422063214', '557016470048210964'];
 
 client.once('ready', () => {
   // Log bot tag to console on start
@@ -47,15 +48,18 @@ client.once('ready', () => {
   ]});
 });
 
-client.on('message', async message => {
-    if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
-      message.channel.send("Updating slash commands...")
-      // Register slash commands globally (set them every time you change slashcommnads.json)
-      await client.application.commands.set(slashCommands.then(message.channel.send("Slash commands are up to date :white_check_mark:"))).catch(console.error)
-    } else {
-      return;
-    }
-});
+client.on('messageCreate', async message => {
+  if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
+    message.channel.send("Updating slash commands...")
+    // Register slash commands globally (set them every time you change slashcommands.json);
+await client.application.commands.set(slashCommands)
+.then(() => {
+    message.channel.send(`Slash commands are updating... Discord API will take some time to update the commands <@${message.author.id}>.`)
+    })
+  } else {
+    return
+  }
+})
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
@@ -338,7 +342,6 @@ async function help(interaction) {
 
 async function thread(interaction) {
   if (!interaction.use.permissions.has("MANAGE_CHANNELS")) {
-  const wait = require('util').promisify(setTimeout);
   const name = interaction.options.get("thread").options.get("name").value
   const reason = interaction.options.get("thread").options.get("reason").value
   const author = `<@${interaction.member.user.id}>`
