@@ -11,6 +11,7 @@ const client = new Discord.Client({
 });
 
 const axios = require('axios');
+const wait = require('util').promisify(setTimeout);
 const parseString = require('xml2js').parseString;
 const gitlog = require("gitlog").default;
 require('dotenv').config();
@@ -22,13 +23,9 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-// client.on('message', () => {
+const ownerarray = ['756289468285190294', '745063586422063214', '557016470048210964'];
 
-// })
 client.once('ready', () => {
-  // // Register slash commands globally (set them every time you change slashcommnads.json)
-  client.application.commands.set(slashCommands)
-
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -50,6 +47,19 @@ client.once('ready', () => {
     }
   ]});
 });
+
+client.on('messageCreate', async message => {
+  if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
+    message.channel.send("Updating slash commands...")
+    // Register slash commands globally (set them every time you change slashcommands.json);
+await client.application.commands.set(slashCommands)
+.then(() => {
+    message.channel.send(`Slash commands are updating... Discord API will take some time to update the commands <@${message.author.id}>.`)
+    })
+  } else {
+    return
+  }
+})
 
 client.on("interaction", interaction => {
   // If the interaction isn't a slash command, return
@@ -204,14 +214,19 @@ async function news(interaction) {
                       value: 'us-news',
                   },
                   {
-                      label: 'Finance',
-                      description: 'View US Finance News',
-                      value: 'finance',
+                      label: 'Stocks',
+                      description: 'View News Related to Stocks',
+                      value: 'stocks',
                   },
                   {
                       label: 'Sports',
                       description: 'View US Sports News',
                       value: 'sports',
+                  },
+                  {
+                    label: 'Custom Search (PREMIUM ONLY)',
+                    description: 'Search a topic and find News articles about it',
+                    value: 'custom',
                   },
               ]),
       );
@@ -326,7 +341,7 @@ async function help(interaction) {
 }
 
 async function thread(interaction) {
-  const wait = require('util').promisify(setTimeout);
+  if (!interaction.use.permissions.has("MANAGE_CHANNELS")) {
   const name = interaction.options.get("thread").options.get("name").value
   const reason = interaction.options.get("thread").options.get("reason").value
   const author = `<@${interaction.member.user.id}>`
@@ -345,6 +360,9 @@ async function thread(interaction) {
   await wait(30000) //Waits for 30 seconds
   interaction.deleteReply()
   .catch(console.error);
+  } else {
+    return interaction.reply("You do not have access to thread creation. Please make sure you have MANAGE_CHANNELS Permission");
+  }
 }
 
 async function ping(interaction) {
