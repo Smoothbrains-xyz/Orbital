@@ -139,7 +139,7 @@ async function data(interaction) {
     .setTitle("Orbital Info")
     .addField(`Servers`, `${serverCount}`, true)
     .addField(`Uptime`, `${uptimeDays.toFixed(1)} days`, true)
-    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/ADawesomeguy/nasa-bot)`, true)
+    .addField(`Links`, `[\`Invite\`](https://adat.link/orbital) [\`GitHub\`](https://github.com/Smoothbrains-dev/Orbital)`, true)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
@@ -177,7 +177,7 @@ async function changelog(interaction) {
     .setTimestamp();
 
   commits.forEach(commit => {
-    changelogEmbed.addField(commit.abbrevHash, `> \`Hash:\`${commit.hash}\n> \`Subject:\`${commit.subject}\n> \`Author:\`${commit.authorName}\n> \`Date:\`${commit.authorDateRel}\n> \`Link\`: [GitHub](https://github.com/ADawesomeguy/AwesomeSciBo/commit/${commit.hash})\n`);
+    changelogEmbed.addField(commit.abbrevHash, `> \`Hash:\`${commit.hash}\n> \`Subject:\`${commit.subject}\n> \`Author:\`${commit.authorName}\n> \`Date:\`${commit.authorDateRel}\n> \`Link\`: [GitHub](https://github.com/Smoothbrains-dev/Orbital/commit/${commit.hash})\n`);
   });
 
   interaction.reply({ embeds: [changelogEmbed] });
