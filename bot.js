@@ -224,7 +224,7 @@ async function news(interaction) {
                       value: 'sports',
                   },
                   {
-                    label: 'Custom Search (PREMIUM ONLY)',
+                    label: 'Custom Search (PREMIUM)',
                     description: 'Search a topic and find News articles about it',
                     value: 'custom',
                   },
