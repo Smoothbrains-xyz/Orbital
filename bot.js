@@ -1,6 +1,7 @@
 /* ENV VARIABLES
 *  TOKEN: Bot token
 *  NASA_API_KEY: NASA API Key
+*  CHROMIUM_PATH: Path to Chromium executable
 */
 require('dotenv').config()
 
@@ -14,6 +15,7 @@ const axios = require('axios');
 const wait = require('util').promisify(setTimeout);
 const parseString = require('xml2js').parseString;
 const gitlog = require("gitlog").default;
+const nodeHtmlToImage = require('node-html-to-image');
 require('dotenv').config();
 
 const urls = require('./config/urls.json');
@@ -23,9 +25,21 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-const ownerarray = ['756289468285190294', '745063586422063214', '557016470048210964'];
+
+client.on('message', async message => {
+  if (message.content.toLowerCase() === "!deploy") {
+    client.application.commands.set(slashCommands)
+      .then(() => {
+        message.reply("Slash commands updated!");
+      })
+      .catch(console.error);
+  }
+});
 
 client.once('ready', () => {
+  // // Register slash commands globally (set them every time you change slashcommnads.json)
+  //client.application.commands.set(slashCommands)
+
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -132,6 +146,9 @@ async function space(interaction) {
       break;
     case "epic":
       epic(interaction, interaction.options.first().options.first().value);
+      break;
+    case "marsweather":
+      marsWeather(interaction);
       break;
   }
 }
@@ -645,6 +662,26 @@ async function remind(interaction) {
 
     interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
   }, totalMs);
+}
+
+async function marsWeather(interaction) {
+  interaction.defer();
+  axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
+    .then(async response => {
+      data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
+      const images = await nodeHtmlToImage({
+        html: data,
+        puppeteerArgs: {
+          executablePath: process.env.CHROMIUM_PATH
+        }
+      });
+      interaction.followUp({
+        files: [{
+          attachment: images,
+          name: "file.jpg"
+        }]
+      });
+    });
 }
 
 client.login(token);

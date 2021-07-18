@@ -19,6 +19,11 @@
       },
       {
         "type": 1,
+        "name": "marsweather",
+        "description": "Returns a neatly formatted image with information about the current weather on Mars"
+      },
+      {
+        "type": 1,
         "name": "epic",
         "description": "Returns an image collected by DSCOVR's Earth Polychromatic Imaging Camera (EPIC) instrument",
         "options": [
