@@ -33,27 +33,8 @@ client.on('message', async message => {
       })
       .catch(console.error);
   }
+});
 
-  if (message.content.toLowerCase() === "!marsweather") {
-    axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
-      .then(async response => {
-        data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
-        console.log(data);
-        const images = await nodeHtmlToImage({
-          html: data,
-	  puppeteerArgs: {
-      	    executablePath: process.env.CHROMIUM_PATH
-	  }
-        });
-        message.reply({
-          files: [{
-            attachment: images,
-            name: "file.jpg"
-          }]
-        });
-      });
-  }
-})
 client.once('ready', () => {
   // // Register slash commands globally (set them every time you change slashcommnads.json)
   //client.application.commands.set(slashCommands)
@@ -151,6 +132,9 @@ async function space(interaction) {
       break;
     case "epic":
       epic(interaction, interaction.options.first().options.first().value);
+      break;
+    case "marsweather":
+      marsWeather(interaction);
       break;
   }
 }
@@ -656,6 +640,26 @@ async function remind(interaction) {
 
     interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
   }, totalMs);
+}
+
+async function marsWeather(interaction) {
+  axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
+    .then(async response => {
+      data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
+      console.log(data);
+      const images = await nodeHtmlToImage({
+        html: data,
+        puppeteerArgs: {
+          executablePath: process.env.CHROMIUM_PATH
+        }
+      });
+      message.reply({
+        files: [{
+          attachment: images,
+          name: "file.jpg"
+        }]
+      });
+    });
 }
 
 client.login(token);
