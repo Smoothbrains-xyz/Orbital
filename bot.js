@@ -643,17 +643,17 @@ async function remind(interaction) {
 }
 
 async function marsWeather(interaction) {
+  interaction.defer();
   axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
     .then(async response => {
       data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
-      console.log(data);
       const images = await nodeHtmlToImage({
         html: data,
         puppeteerArgs: {
           executablePath: process.env.CHROMIUM_PATH
         }
       });
-      message.reply({
+      interaction.followUp({
         files: [{
           attachment: images,
           name: "file.jpg"
