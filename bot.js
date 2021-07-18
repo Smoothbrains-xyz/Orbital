@@ -13,6 +13,7 @@ const client = new Discord.Client({
 const axios = require('axios');
 const parseString = require('xml2js').parseString;
 const gitlog = require("gitlog").default;
+const nodeHtmlToImage = require('node-html-to-image');
 require('dotenv').config();
 
 const urls = require('./config/urls.json');
@@ -22,12 +23,36 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
-// client.on('message', () => {
 
-// })
+client.on('message', async message => {
+  if (message.content.toLowerCase() === "!deploy") {
+    client.application.commands.set(slashCommands)
+      .then(() => {
+        message.reply("Slash commands updated!");
+      })
+      .catch(console.error);
+  }
+
+  if (message.content.toLowerCase() === "sausage") {
+    axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
+      .then(async response => {
+        data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
+        console.log(data);
+        const images = await nodeHtmlToImage({
+          html: data
+        });
+        message.reply({
+          files: [{
+            attachment: images,
+            name: "file.jpg"
+          }]
+        });
+      });
+  }
+})
 client.once('ready', () => {
   // // Register slash commands globally (set them every time you change slashcommnads.json)
-  client.application.commands.set(slashCommands)
+  //client.application.commands.set(slashCommands)
 
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
