@@ -1,6 +1,7 @@
 /* ENV VARIABLES
 *  TOKEN: Bot token
 *  NASA_API_KEY: NASA API Key
+*  CHROMIUM_PATH: Path to Chromium executable
 */
 require('dotenv').config()
 
@@ -33,13 +34,16 @@ client.on('message', async message => {
       .catch(console.error);
   }
 
-  if (message.content.toLowerCase() === "sausage") {
+  if (message.content.toLowerCase() === "!marsweather") {
     axios.get("https://mars.nasa.gov/layout/embed/image/mslweather/")
       .then(async response => {
         data = response.data.replace(/src="\//g, "src=\"https://mars.nasa.gov/").replace(/href="\//g, "href=\"https://mars.nasa.gov/");
         console.log(data);
         const images = await nodeHtmlToImage({
-          html: data
+          html: data,
+	  puppeteerArgs: {
+      	    executablePath: process.env.CHROMIUM_PATH
+	  }
         });
         message.reply({
           files: [{
