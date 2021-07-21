@@ -4,10 +4,6 @@
     "description": "Returns information regarding US News"
   },
   {
-    "name": "bob",
-    "description": "i am bob"
-  },
-  {
     "name": "space",
     "description": "Commands regarding astronomy",
     "options": [

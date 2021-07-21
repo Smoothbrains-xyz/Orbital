@@ -42,7 +42,6 @@ client.once('ready', () => {
 
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
-
   // Set embed info
   embedInfo = {
     color: "ffffff",
@@ -64,18 +63,14 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
   if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
-    message.channel.send("Updating slash commands...")
     // Register slash commands globally (set them every time you change slashcommands.json);
-await client.application.commands.set(slashCommands)
-.then(() => {
-    message.channel.send(`Slash commands are updating... Discord API will take some time to update the commands <@${message.author.id}>.`)
-    })
-  } else {
-    return
-  }
-})
+    await client.application.commands.set(slashCommands)
+    message.channel.send("Started updating slash commands...")
+    console.log("Updating Slash Commands...")
+    }
+  })
 
-client.on("interaction", interaction => {
+client.on("interactionCreate", interaction => {
   // If the interaction isn't a slash command, return
   if (!interaction.isCommand() && !interaction.isButton()) return;
 
@@ -94,6 +89,9 @@ client.on("interaction", interaction => {
       case "help":
         help(interaction);
         break;
+      case "bob":
+      bob(interaction);
+      break;
       case "ping":
         ping(interaction);
         break;
@@ -219,10 +217,11 @@ async function create(interaction) {
 }
 
 async function news(interaction) {
+  let customsearchvar = null;
   const row = new Discord.MessageActionRow()
       .addComponents(
           new Discord.MessageSelectMenu()
-              .setCustomID('select')
+              .setCustomId('select')
               .setPlaceholder('Nothing selected')
               .addOptions([
                   {
@@ -231,32 +230,22 @@ async function news(interaction) {
                       value: 'us-news',
                   },
                   {
-                      label: 'Stocks',
-                      description: 'View News Related to Stocks',
-                      value: 'stocks',
-                  },
-                  {
-                      label: 'Sports',
-                      description: 'View US Sports News',
-                      value: 'sports',
-                  },
-                  {
                     label: 'Custom Search (PREMIUM)',
-                    description: 'Search a topic and find News articles about it',
+                    description: 'Search a topic and find news articles about it',
                     value: 'custom',
                   },
               ]),
       );
 
   await interaction.reply({ content: 'News Options:', components: [row] });
+  }
 
-  client.on('interaction', async interaction => {
+  client.on('interactionCreate', async interaction => {
       if (!interaction.isSelectMenu()) return;
-
-      if (interaction.customID === 'select') {
-          await interaction.defer()
+      if (interaction.customId === 'select') {
+          await interaction.update({ components: [] });
           if (interaction.values[0] === "us-news") {
-          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=d97d280008ad4692bc287045547077a3`
+          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${newsapi}`
           const results = await axios.get(url)
           const info = results.data.articles;
           const random = Math.floor(Math.random() * info.length);
@@ -272,9 +261,8 @@ async function news(interaction) {
                     .setColor(`${embedInfo.color}`)
                     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
                     .setTimestamp();
-
+      
                   await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
-              // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}\n`, components: [] });
           } else if (randObject.urlToImage) {
             const newsEmbedMedia = new Discord.MessageEmbed()
                     .setTitle(`${randObject.title}`)
@@ -289,16 +277,62 @@ async function news(interaction) {
                     .setTimestamp();
 
                     await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
-            // await interaction.editReply({ content: `Article: ${randObject.title}\nWritten By: ${randObject.author}\nURL: ${randObject.url}\nDescription: ${randObject.description}\nSource: ${randObject.source.name}`, components: [] });
-        } else if (interaction.values[0] === "finance") {
-              await interaction.editReply({ content: 'Finance was Selected!', components: [] });
-          } else if (interaction.values[0] === "sports") {
-            await interaction.editReply({ content: 'Sports was Selected!', components: [] });
+        } 
+        } else if (interaction.values[0] === "custom" && guildidpremarray.includes(interaction.guild.id)) {
+          await interaction.editReply({ content: 'Type a topic to search for articles. *Time limit: 120 seconds*', components: [] });
+            const collector = interaction.channel.createMessageCollector({
+            max: '1',
+            maxMatches: '10',
+            time: '120000',
+            errors: ['time']
+          })
+          collector.on('collect', async (m) => {
+            if (typeof m.content === 'string') {
+              customsearchvar = m.content;
+              collector.stop;
+            }
+
+          if (typeof customsearchvar === 'string') {
+            const url = `https://newsapi.org/v2/everything?q=${customsearchvar}&apiKey=${newsapi}`
+            const results = await axios.get(url)
+            const info = results.data.articles;
+            const random = Math.floor(Math.random() * info.length);
+            const randObject = info[random];
+            const newcustomsearchvar = customsearchvar.charAt(0).toUpperCase() + customsearchvar.slice(1);
+      if (randObject.urlToImage === null || !randObject.urlToImage) {
+              const newsEmbed = new Discord.MessageEmbed()
+                      .setTitle(`${randObject.title}`)
+                      .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                      .setDescription(`**Description**: \n${randObject.description}`)
+                      .addField(`URL:`, `[Link](${randObject.url})`, true)
+                      .addField("Source:", `${randObject.source.name}`)
+                      .setColor(`${embedInfo.color}`)
+                      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                      .setTimestamp();
+                      
+                    await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbed] });
+            } else if (randObject.urlToImage) {
+              const newsEmbedMedia = new Discord.MessageEmbed()
+                      .setTitle(`${randObject.title}`)
+                      .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+                      .setThumbnail(`${randObject.urlToImage}`)
+                      .setDescription(`**Description**: \n${randObject.description}`)
+                      .addField(`URL:`, `[Link](${randObject.url})`, true)
+                      .addField("Source:", `${randObject.source.name}`)
+                      .setColor(`${embedInfo.color}`)
+                      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+                      .setTimestamp();
+
+                      //interaction.user.id is interaction author
+                      await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbedMedia] });
         }
+        }
+      })
+      } else if(!guildidpremarray.includes(interaction.guild.id)) {
+        return await interaction.editReply({ content: 'Oops, seems like you do not have premium...', components: [] });
       }
     }
   });
-}
 
 async function apod(interaction) {
   axios.get(`${urls.apod}${nasaApiKey}`)
