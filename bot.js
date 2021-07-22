@@ -29,7 +29,7 @@ const newsapi = process.env.NEWS_API_KEY;
 client.once('ready', () => {
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
-  
+
   // Set embed info
   embedInfo = {
     color: "ffffff",
@@ -365,7 +365,6 @@ async function iss(interaction) {
 }
 
 async function help(interaction) {
-      let helpContent = '';
       const helpEmbed = new Discord.MessageEmbed()
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setDescription("Command List:")
@@ -421,8 +420,6 @@ async function help(interaction) {
 
         helpEmbed.addField("/" + slashCommand.name, `${commandInfo}`);
       });
-
-      console.log(helpEmbed);
       interaction.reply({ embeds: [helpEmbed] });
 }
 
