@@ -702,8 +702,8 @@ async function remind(interaction) {
       break;
   }
 
-  const totalMs = interaction.options.get('amount').value * multiplier;
-  const finalDate = Math.round(Date.now()/1000 + totalMs);
+  const totalSeconds = interaction.options.get('amount').value * multiplier;
+  const finalDate = Math.round(Date.now()/1000 + totalSeconds);
   const reminderOverviewEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Reminder Created")
@@ -726,7 +726,7 @@ async function remind(interaction) {
       .setTimestamp();
 
     interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
-  }, totalMs);
+  }, totalSeconds * 1000);
 }
 
 async function marsWeather(interaction) {
