@@ -554,7 +554,7 @@ async function serverInfo(interaction) {
     .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Announcement: ${announcementChannelCount} • Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
     .addField("Roles", `${numRoles}`)
-    .addField("Created", `${new Date(guild.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`)
+    .addField("Created", `<t:${guild.createdTimestamp}:T>`)
     //.addField("User Statuses", `🟦 • ${numOnline} online\n\n🟧 • ${numAway} away\n\n⬛ • ${numOffline} offline\n\n🟥 • ${numDND} DND`)
     .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
