@@ -540,10 +540,10 @@ async function serverInfo(interaction) {
   const numHumans = guild.members.cache.filter(member => !member.user.bot).size;
   const numBots = guild.members.cache.filter(member => member.user.bot).size;
   const numRoles = guild.roles.cache.size;
-  const numOnline = guild.members.cache.filter(member => member.presence.status === "online" && !member.user.bot).size;
+  /*const numOnline = guild.members.cache.filter(member => member.presence.status === "online" && !member.user.bot).size;
   const numOffline = guild.members.cache.filter(member => member.presence.status === "offline" && !member.user.bot).size;
   const numAway = guild.members.cache.filter(member => member.presence.status === "idle" && !member.user.bot).size;
-  const numDND = guild.members.cache.filter(member => member.presence.status === "dnd" && !member.user.bot).size;
+  const numDND = guild.members.cache.filter(member => member.presence.status === "dnd" && !member.user.bot).size;*/
   const serverInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle(`**${guild.name}** Info`)
@@ -554,7 +554,7 @@ async function serverInfo(interaction) {
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
     .addField("Roles", `${numRoles}`)
     .addField("Created", `${new Date(guild.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`)
-    .addField("User Statuses", `🟦 • ${numOnline} online\n\n🟧 • ${numAway} away\n\n⬛ • ${numOffline} offline\n\n🟥 • ${numDND} DND`)
+    //.addField("User Statuses", `🟦 • ${numOnline} online\n\n🟧 • ${numAway} away\n\n⬛ • ${numOffline} offline\n\n🟥 • ${numDND} DND`)
     .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
