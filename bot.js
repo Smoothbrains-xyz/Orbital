@@ -26,22 +26,10 @@ const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
 
-client.on('message', async message => {
-  if (message.content.toLowerCase() === "!deploy") {
-    client.application.commands.set(slashCommands)
-      .then(() => {
-        message.reply("Slash commands updated!");
-      })
-      .catch(console.error);
-  }
-});
-
 client.once('ready', () => {
-  // // Register slash commands globally (set them every time you change slashcommnads.json)
-  //client.application.commands.set(slashCommands)
-
   // Log bot tag to console on start
   console.log(`Logged in as ${client.user.tag}!`);
+  
   // Set embed info
   embedInfo = {
     color: "ffffff",
@@ -68,7 +56,7 @@ client.on('messageCreate', async message => {
     message.channel.send("Started updating slash commands...")
     console.log("Updating Slash Commands...")
     }
-  })
+});
 
 client.on("interactionCreate", interaction => {
   // If the interaction isn't a slash command, return
@@ -89,9 +77,6 @@ client.on("interactionCreate", interaction => {
       case "help":
         help(interaction);
         break;
-      case "bob":
-      bob(interaction);
-      break;
       case "ping":
         ping(interaction);
         break;
@@ -261,7 +246,7 @@ async function news(interaction) {
                     .setColor(`${embedInfo.color}`)
                     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
                     .setTimestamp();
-      
+
                   await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
           } else if (randObject.urlToImage) {
             const newsEmbedMedia = new Discord.MessageEmbed()
@@ -277,7 +262,7 @@ async function news(interaction) {
                     .setTimestamp();
 
                     await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
-        } 
+        }
         } else if (interaction.values[0] === "custom" && guildidpremarray.includes(interaction.guild.id)) {
           await interaction.editReply({ content: 'Type a topic to search for articles. *Time limit: 120 seconds*', components: [] });
             const collector = interaction.channel.createMessageCollector({
@@ -309,7 +294,7 @@ async function news(interaction) {
                       .setColor(`${embedInfo.color}`)
                       .setFooter(embedInfo.footer[0], embedInfo.footer[1])
                       .setTimestamp();
-                      
+
                     await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbed] });
             } else if (randObject.urlToImage) {
               const newsEmbedMedia = new Discord.MessageEmbed()
@@ -380,14 +365,64 @@ async function iss(interaction) {
 }
 
 async function help(interaction) {
+      let helpContent = '';
       const helpEmbed = new Discord.MessageEmbed()
-        .setTitle("Help Command • Orbital")
-        .setDescription("TODO")
-        .addField("Command List:", "TODO")
+        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+        .setDescription("Command List:")
         .setColor("ffffff")
         .setFooter(embedInfo.footer[0], embedInfo.footer[1])
         .setTimestamp();
 
+      slashCommands.forEach(async slashCommand => {
+        let commandInfo = `${slashCommand.description}`;
+        if (slashCommand.options) {
+          commandInfo += `\nOptions:`
+          slashCommand.options.forEach(option => {
+            const name = option.name;
+            const description = option.description;
+            let type;
+            switch (option.type) {
+              case 1:
+                type = "Subcommand";
+                break;
+              case 2:
+                type = "Subcommand Group";
+                break;
+              case 3:
+                type = "String";
+                break;
+              case 4:
+                type = "Integer";
+                break;
+              case 5:
+                type = "Boolean";
+                break;
+              case 6:
+                type = "User";
+                break;
+              case 7:
+                type = "Channel";
+                break;
+              case 8:
+                type = "Role";
+                break;
+              case 9:
+                type = "Mentionable";
+                break;
+            }
+            commandInfo += `\n> Type: \`${type}\`\n> Name: \`${name}\`\n> Description: \`${description}\`\n`;
+            if (option.options) {
+              option.options.forEach(suboption => {
+                //commandInfo += `\n${suboption.type}\n${suboption.name}\n${suboption.description}`
+              });
+            }
+          });
+        }
+
+        helpEmbed.addField("/" + slashCommand.name, `${commandInfo}`);
+      });
+
+      console.log(helpEmbed);
       interaction.reply({ embeds: [helpEmbed] });
 }
 
@@ -400,7 +435,6 @@ async function thread(interaction) {
   chan.members.add(interaction.member, "Created Thread")
 
   const threadEmbed = new Discord.MessageEmbed()
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Thread Creation Status")
     .setDescription(`Successfully created Thread: __**${name}**__ by ${author}\n\nReason for thread creation: ${reason}\n\nThread will auto archive after no activity in 24 Hours`)
     .setColor(`${embedInfo.color}`)
