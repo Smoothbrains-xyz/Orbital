@@ -572,8 +572,8 @@ async function memberInfo(interaction) {
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .addField("Roles", member.roles.cache.map(r => `${r}`).join(' • '))
     .addField("Permissions", member.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
-    .addField("Joined", `<t:${member.joinedTimestamp}:R>`, true)
-    .addField("Account created", `<t:${member.user.createdTimestamp}:R>`, true)
+    .addField("Joined", `<t:${member.joinedTimestamp/1000}:R>`, true)
+    .addField("Account created", `<t:${member.user.createdTimestamp/1000}:R>`, true)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
