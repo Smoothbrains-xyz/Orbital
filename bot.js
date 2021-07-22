@@ -534,9 +534,9 @@ async function serverInfo(interaction) {
   const guild = interaction.guild;
   await guild.members.fetch();
   await guild.roles.fetch();
-  const textChannelCount = guild.channels.cache.filter(c => c.type === 'text').size;
-  const voiceChannelCount = guild.channels.cache.filter(c => c.type === 'voice').size;
-  const categoryChannelCount = guild.channels.cache.filter(c => c.type === 'category').size;
+  const textChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_TEXT').size;
+  const voiceChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_VOICE').size;
+  const categoryChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_CATEGORY').size;
   const numHumans = guild.members.cache.filter(member => !member.user.bot).size;
   const numBots = guild.members.cache.filter(member => member.user.bot).size;
   const numRoles = guild.roles.cache.size;
