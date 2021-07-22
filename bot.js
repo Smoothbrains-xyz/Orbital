@@ -26,7 +26,7 @@ const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
   if (message.content.toLowerCase() === "!deploy") {
     client.application.commands.set(slashCommands)
       .then(() => {
