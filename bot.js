@@ -680,35 +680,35 @@ async function remind(interaction) {
   // Unit to millisecond conversion
   switch (interaction.options.get('period').value) {
     case "seconds":
-      multiplier = 1000;
+      multiplier = 1;
       break;
     case "minutes":
-      multiplier = 60000;
+      multiplier = 60;
       break;
     case "hours":
-      multiplier = 3600000;
+      multiplier = 3600;
       break;
     case "days":
-      multiplier = 86400000;
+      multiplier = 86400;
       break;
     case "weeks":
-      multiplier = 604800000;
+      multiplier = 604800;
       break;
     case "months":
-      multiplier = 2629800000;
+      multiplier = 2629800;
       break;
     case "years":
-      multiplier = 31557600000;
+      multiplier = 31557600;
       break;
   }
 
   const totalMs = interaction.options.get('amount').value * multiplier;
-  const finalDate = new Date(Date.now() + totalMs);
+  const finalDate = Math.round(Date.now()/1000 + totalMs);
   const reminderOverviewEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Reminder Created")
     .addField("User", `${interaction.user.tag}`)
-    .addField("Date", finalDate.toString())
+    .addField("Date", `Reminding you <t:${finalDate}:R> about \`${reason}\``)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
