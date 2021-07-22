@@ -427,7 +427,7 @@ async function help(interaction) {
 }
 
 async function thread(interaction) {
-  if (!interaction.use.permissions.has("MANAGE_CHANNELS")) {
+  if (interaction.user.permissions.has("MANAGE_CHANNELS")) {
   const name = interaction.options.get("thread").options.get("name").value
   const reason = interaction.options.get("thread").options.get("reason").value
   const author = `<@${interaction.member.user.id}>`
