@@ -551,7 +551,7 @@ async function serverInfo(interaction) {
     .addField("Owner", `<@${guild.ownerId}>`, true)
     //.addField("Region", guild.region, true)
     .addField("Verification Level", guild.verificationLevel, true)
-    .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Announcment: ${announcementChannelCount} • Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
+    .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Announcement: ${announcementChannelCount} • Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
     .addField("Roles", `${numRoles}`)
     .addField("Created", `${new Date(guild.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`)
