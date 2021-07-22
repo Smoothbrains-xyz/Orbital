@@ -60,7 +60,7 @@ client.on('messageCreate', async message => {
 
 client.on("interactionCreate", interaction => {
   // If the interaction isn't a slash command, return
-  if (!interaction.isCommand() && !interaction.isButton()) return;
+  if (!interaction.isCommand() && !interaction.isButton() && !interaction.isSelectMenu()) return;
 
   if (interaction.isCommand()) {
     // Switch between categories and uncategorized commands
@@ -97,7 +97,7 @@ client.on("interactionCreate", interaction => {
         break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
-    switch(interaction.customID) {
+    switch(interaction.customId) {
       case "another-natural":
         epic(interaction, false);
         break;
@@ -105,11 +105,14 @@ client.on("interactionCreate", interaction => {
         epic(interaction, true);
         break;
     }
+  } else if (interaction.isSelectMenu()) {
+    switch (interaction.customId) {
+    }
   }
 });
 
 async function qrcodeSwitch(interaction) {
-  switch(interaction.options.first().name) {
+  switch(interaction.options.getSubCommand()) {
     case "read":
       qrcode(true, interaction);
       break;
@@ -120,7 +123,7 @@ async function qrcodeSwitch(interaction) {
 }
 
 async function space(interaction) {
-  switch(interaction.options.first().name) {
+  switch(interaction.options.getSubCommand()) {
     case "apod":
       apod(interaction);
       break;
@@ -128,7 +131,7 @@ async function space(interaction) {
       iss(interaction);
       break;
     case "epic":
-      epic(interaction, interaction.options.first().options.first().value);
+      epic(interaction, interaction.options.get('enhanced').value);
       break;
     case "marsweather":
       marsWeather(interaction);
@@ -157,7 +160,7 @@ async function data(interaction) {
 }
 
 async function info(interaction) {
-  switch(interaction.options.first().name) {
+  switch(interaction.options.getSubCommand()) {
     case "server":
       serverInfo(interaction);
       break;
@@ -194,7 +197,7 @@ async function changelog(interaction) {
 }
 
 async function create(interaction) {
-  switch(interaction.options.first().name) {
+  switch(interaction.options.getSubCommand()) {
     case "thread":
       thread(interaction);
       break;
@@ -486,11 +489,11 @@ async function epic(interaction, isEnhanced) {
               .setTimestamp();
 
             const anotherButton = new Discord.MessageButton()
-              .setCustomID('another-natural')
+              .setCustomId('another-natural')
               .setLabel('Another!')
               .setStyle('SECONDARY');
 
-            interaction.followUp({ embeds: [epicNaturalEmbed], components: [[anotherButton]] });
+            interaction.followUp({ embeds: [epicNaturalEmbed], components: [new Discord.MessageActionRow().addComponents(anotherButton)] });
           });
       });
   // If "enhanced" is true
@@ -517,11 +520,11 @@ async function epic(interaction, isEnhanced) {
               .setTimestamp();
 
             const anotherButton = new Discord.MessageButton()
-              .setCustomID('another-enhanced')
+              .setCustomId('another-enhanced')
               .setLabel('Another!')
               .setStyle('SECONDARY');
 
-            interaction.followUp({ embeds: [epicEnhancedEmbed], components: [[anotherButton]] });
+            interaction.followUp({ embeds: [epicEnhancedEmbed], components: [new Discord.MessageActionRow().addComponents(anotherButton)] });
           });
       });
   }
@@ -537,10 +540,10 @@ async function serverInfo(interaction) {
   const numHumans = guild.members.cache.filter(member => !member.user.bot).size;
   const numBots = guild.members.cache.filter(member => member.user.bot).size;
   const numRoles = guild.roles.cache.size;
-  const numOnline = guild.members.cache.filter(member => member.user.presence.status === "online" && !member.user.bot).size;
-  const numOffline = guild.members.cache.filter(member => member.user.presence.status === "offline" && !member.user.bot).size;
-  const numAway = guild.members.cache.filter(member => member.user.presence.status === "idle" && !member.user.bot).size;
-  const numDND = guild.members.cache.filter(member => member.user.presence.status === "dnd" && !member.user.bot).size;
+  const numOnline = guild.members.cache.filter(member => member.presence.status === "online" && !member.user.bot).size;
+  const numOffline = guild.members.cache.filter(member => member.presence.status === "offline" && !member.user.bot).size;
+  const numAway = guild.members.cache.filter(member => member.presence.status === "idle" && !member.user.bot).size;
+  const numDND = guild.members.cache.filter(member => member.presence.status === "dnd" && !member.user.bot).size;
   const serverInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle(`**${guild.name}** Info`)
@@ -560,7 +563,8 @@ async function serverInfo(interaction) {
 }
 
 async function memberInfo(interaction) {
-  const member = interaction.options.first().options.first().member;
+  const member = interaction.options.get('member').member;
+  console.log(member);
 
   const memberInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(member.user.tag, member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
@@ -577,7 +581,7 @@ async function memberInfo(interaction) {
 }
 
 async function roleInfo(interaction) {
-  const role = interaction.options.first().options.first().role;
+  const role = interaction.options.get('role').role;
 
   const roleInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
@@ -593,41 +597,49 @@ async function roleInfo(interaction) {
 
 async function wolfram(interaction) {
   interaction.defer();
-  await axios.get(`http://api.wolframalpha.com/v2/query?input=${interaction.options.first().value}&appid=${process.env.WOLFRAM_API_KEY}`)
+  await axios.get(`http://api.wolframalpha.com/v2/query?input=${interaction.options.get('query').value}&appid=${process.env.WOLFRAM_API_KEY}`)
     .then(async response => {
         data = response.data;
         parseString(data, async (err, result) => {
-          const wolframEmbed = new Discord.MessageEmbed()
-            .setTitle(`Results for \`${interaction.options.first().value}\``)
-            .setColor(embedInfo.color);
-          const resultButtons = [];
           if (result.queryresult.pod) {
+            const wolframEmbed = new Discord.MessageEmbed()
+              .setTitle(`Results for \`${interaction.options.get('query').value}\``)
+              .setColor(embedInfo.color);
+
+            const menuOptions = [];
             result.queryresult.pod.forEach(p => {
-              const button = new Discord.MessageButton()
-                .setCustomID(p.$.title)
-                .setLabel(p.$.title)
-                .setStyle('SECONDARY');
-              resultButtons.push(button);
+              menuOptions.push({
+                label: p.$.title.length >= 25 ? p.$.title.slice(0, 21) + "..." : p.$.title,
+                value: p.$.title
+              });
             });
-            resultButtons.splice(5)
-            const interactionMessage = await interaction.followUp({ embeds: [wolframEmbed], components: [resultButtons] });
 
-            const filter = i => i.message.id === interactionMessage.id;
+            const selectMenu = new Discord.MessageSelectMenu()
+              .setCustomId('wolfram-results')
+              .setPlaceholder('Results')
+              .addOptions(menuOptions)
 
-            const collector = interaction.channel.createMessageComponentInteractionCollector({ filter });
+            const interactionMessage = await interaction.followUp({ content: "Results:", components: [new Discord.MessageActionRow().addComponents(selectMenu)] });
+
+            const filter = i => {
+            	i.deferUpdate();
+            	return i.user.id === interactionMessage.interaction.user.id;
+            };
+
+            const collector = interactionMessage.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU' });
 
             collector.on('collect', async i => {
               result.queryresult.pod.forEach(p => {
-                if (p.$.title === i.customID) {
+                if (p.$.title === i.values[0]) {
                   const embeds = [];
                   p.subpod.forEach(s => {
                     const embed = new Discord.MessageEmbed()
-                      .setTitle(i.customID)
+                      .setTitle(i.values['0'])
                       .setImage(s.img[0].$.src)
                       .setColor(embedInfo.color);
                     embeds.push(embed);
                   });
-                  i.reply({ embeds: embeds });
+                  i.message.reply({ embeds: embeds });
                 }
               });
             });
@@ -641,7 +653,7 @@ async function wolfram(interaction) {
 
 async function qrcode(isRead, interaction) {
   interaction.defer();
-  const qrcodeData = interaction.options.first().options.first().value;
+  const qrcodeData = interaction.options.getSubCommand() === 'create' ? interaction.options.get('data').value : interaction.options.get('url').value;
   let qrcodeURL;
   isRead ? qrcodeURL = urls.qrcode_read : qrcodeURL = urls.qrcode_create;
 
@@ -702,8 +714,8 @@ async function remind(interaction) {
       break;
   }
 
-  const totalMs = interaction.options.get('amount').value * multiplier;
-  const finalDate = Math.round(Date.now()/1000 + totalMs);
+  const totalSeconds = interaction.options.get('amount').value * multiplier;
+  const finalDate = Math.round(Date.now()/1000 + totalSeconds);
   const reminderOverviewEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Reminder Created")
@@ -726,7 +738,7 @@ async function remind(interaction) {
       .setTimestamp();
 
     interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [reminderEmbed] });
-  }, totalMs);
+  }, totalSeconds * 1000);
 }
 
 async function marsWeather(interaction) {
