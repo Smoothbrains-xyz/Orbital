@@ -537,6 +537,7 @@ async function serverInfo(interaction) {
   const textChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_TEXT').size;
   const voiceChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_VOICE').size;
   const categoryChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_CATEGORY').size;
+  const announcementChannelCount = guild.channels.cache.filter(c => c.type === 'GUILD_NEWS').size;
   const numHumans = guild.members.cache.filter(member => !member.user.bot).size;
   const numBots = guild.members.cache.filter(member => member.user.bot).size;
   const numRoles = guild.roles.cache.size;
@@ -550,7 +551,7 @@ async function serverInfo(interaction) {
     .addField("Owner", `<@${guild.ownerId}>`, true)
     //.addField("Region", guild.region, true)
     .addField("Verification Level", guild.verificationLevel, true)
-    .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
+    .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Announcment: ${announcementChannelCount} • Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
     .addField("Roles", `${numRoles}`)
     .addField("Created", `${new Date(guild.createdTimestamp).toLocaleString("en-US", {timeZoneName: "short"})}`)
