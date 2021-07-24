@@ -227,6 +227,9 @@ async function create(interaction) {
     case "emoji":
       createEmoji(interaction);
       break;
+    case "sticker":
+      createSticker(interaction);
+      break;
   }
 }
 
@@ -806,6 +809,29 @@ async function createEmoji(interaction) {
         .setDescription(`Emoji "${emoji}" created with name \`${emoji.name}\``)
         .setColor(embedInfo.color);
       interaction.followUp({ embeds: [emojiCreationEmbed] });
+    })
+    .catch(error => {
+      if (error) interaction.followUp({ content: `Invalid image: likely the link does not point to an image or the image is too large/the wrong format.` });
+    });
+}
+
+async function createSticker(interaction) {
+  interaction.defer();
+
+  if (!interaction.user.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
+
+  const url = interaction.options.get("url").value;
+  const name = interaction.options.get("name").value;
+
+  let reason;
+  if (interaction.options.get("reason")) reason = interaction.options.get("reason").value;
+
+  interaction.guild.emojis.create(url, name, { reason: reason ? reason : "Not specified" })
+    .then(sticker => {
+      const stickerCreationEmbed = new Discord.MessageEmbed()
+        .setDescription(`Sticker "${sticker}" created with name \`${sticker.name}\``)
+        .setColor(embedInfo.color);
+      interaction.followUp({ embeds: [stickerCreationEmbed] });
     })
     .catch(error => {
       if (error) interaction.followUp({ content: `Invalid image: likely the link does not point to an image or the image is too large/the wrong format.` });
