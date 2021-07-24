@@ -391,7 +391,6 @@ async function help(interaction) {
       slashCommands.forEach(async slashCommand => {
         const helpEmbed = new Discord.MessageEmbed()
           .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-          .setDescription("Command List:")
           .setColor("ffffff")
           .setFooter(embedInfo.footer[0], embedInfo.footer[1])
           .setTimestamp();
@@ -798,7 +797,7 @@ async function paginator(user, interaction, embeds) {
       .setStyle('SECONDARY')
   );
 
-  await interaction.reply({ embeds: [embeds[index]], components: [row] })
+  await interaction.reply({ content: `Page 1 of ${embeds.length}:`, embeds: [embeds[index]], components: [row] })
     .then(async () => {
       const paginatorMessage = await interaction.fetchReply();
       const filter = i => {
@@ -819,7 +818,7 @@ async function paginator(user, interaction, embeds) {
               if (index > embeds.length - 1) index = 0;
               break;
           }
-          paginatorMessage.edit({ embeds: [embeds[index]] });
+          paginatorMessage.edit({ content: `Page ${index + 1} of ${embeds.length}:`, embeds: [embeds[index]] });
         });
     });
 }
