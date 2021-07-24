@@ -457,7 +457,7 @@ async function help(interaction) {
 }
 
 async function thread(interaction) {
-  if (interaction.user.permissions.has("MANAGE_CHANNELS")) {
+  if (interaction.member.permissions.has("MANAGE_CHANNELS")) {
   const name = interaction.options.get("thread").options.get("name").value
   const reason = interaction.options.get("thread").options.get("reason").value
   const author = `<@${interaction.member.user.id}>`
@@ -795,7 +795,7 @@ async function marsWeather(interaction) {
 async function createEmoji(interaction) {
   interaction.defer();
 
-  if (!interaction.user.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
+  if (!interaction.member.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
 
   const url = interaction.options.get("url").value;
   const name = interaction.options.get("name").value;
@@ -818,7 +818,7 @@ async function createEmoji(interaction) {
 async function createSticker(interaction) {
   interaction.defer();
 
-  if (!interaction.user.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
+  if (!interaction.member.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
 
   const url = interaction.options.get("url").value;
   const name = interaction.options.get("name").value;
