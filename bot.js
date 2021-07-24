@@ -387,14 +387,14 @@ async function iss(interaction) {
 }
 
 async function help(interaction) {
-      const helpEmbed = new Discord.MessageEmbed()
-        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setDescription("Command List:")
-        .setColor("ffffff")
-        .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-        .setTimestamp();
-
+      const embeds = [];
       slashCommands.forEach(async slashCommand => {
+        const helpEmbed = new Discord.MessageEmbed()
+          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+          .setDescription("Command List:")
+          .setColor("ffffff")
+          .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+          .setTimestamp();
         let commandInfo = `${slashCommand.description}`;
         if (slashCommand.options) {
           commandInfo += `\nOptions:`
@@ -441,8 +441,10 @@ async function help(interaction) {
         }
 
         helpEmbed.addField("/" + slashCommand.name, `${commandInfo}`);
+        embeds.push(helpEmbed);
       });
-      interaction.reply({ embeds: [helpEmbed] });
+      paginator(interaction.user, interaction, embeds);
+      //interaction.reply({ embeds: [helpEmbed] });
 }
 
 async function thread(interaction) {
@@ -781,7 +783,7 @@ async function marsWeather(interaction) {
     });
 }
 
-async function paginator(user, channel, embeds) {
+async function paginator(user, interaction, embeds) {
   let index = 0;
 
   const row = new Discord.MessageActionRow();
@@ -796,8 +798,9 @@ async function paginator(user, channel, embeds) {
       .setStyle('PRIMARY')
   );
 
-  await channel.send({ embeds: [embeds[index]], components: [row] })
-    .then(async paginatorMessage => {
+  await interaction.reply({ embeds: [embeds[index]], components: [row] })
+    .then(async () => {
+      const paginatorMessage = await interaction.fetchReply();
       const filter = i => {
         i.deferUpdate();
         return i.user.id === user.id;
