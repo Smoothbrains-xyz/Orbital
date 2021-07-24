@@ -790,12 +790,12 @@ async function paginator(user, interaction, embeds) {
   row.addComponents(
     new Discord.MessageButton()
       .setCustomId('paginator-left')
-      .setLabel('⬅️')
-      .setStyle('PRIMARY'),
+      .setEmoji('868552005977788466')
+      .setStyle('SECONDARY'),
     new Discord.MessageButton()
       .setCustomId('paginator-right')
-      .setLabel('➡️')
-      .setStyle('PRIMARY')
+      .setEmoji('868551772887711754')
+      .setStyle('SECONDARY')
   );
 
   await interaction.reply({ embeds: [embeds[index]], components: [row] })
