@@ -67,6 +67,14 @@ client.on('messageCreate', async message => {
     message.channel.send("Started updating slash commands...")
     console.log("Updating Slash Commands...")
   }
+
+  /*if (message.content.toLowerCase() === '!paginator') {
+    const arrays = [];
+    for (let i = 0; i < 10; i++) {
+      arrays.push(new Discord.MessageEmbed().setTitle(`${i}`));
+    }
+    paginator(message.author, message.channel, arrays);
+  }*/
 });
 
 client.on("interactionCreate", interaction => {
@@ -775,29 +783,39 @@ async function marsWeather(interaction) {
 
 async function paginator(user, channel, embeds) {
   let index = 0;
-  await channel.send({ embeds: [embeds[index]] })
-    .then(async paginatorMessage => {
-      await paginatorMessage.react('⬅️');
-      await paginatorMessage.react('➡️');
 
-      const filter = (r, u) => {
-        return ['⬅️', '➡️'].includes(r.emoji.name);
+  const row = new Discord.MessageActionRow();
+  row.addComponents(
+    new Discord.MessageButton()
+      .setCustomId('paginator-left')
+      .setLabel('⬅️')
+      .setStyle('PRIMARY'),
+    new Discord.MessageButton()
+      .setCustomId('paginator-right')
+      .setLabel('➡️')
+      .setStyle('PRIMARY')
+  );
+
+  await channel.send({ embeds: [embeds[index]], components: [row] })
+    .then(async paginatorMessage => {
+      const filter = i => {
+        i.deferUpdate();
+        return i.user.id === user.id;
       }
 
-      const paginatorCollector = paginatorMessage.createReactionCollector({ filter });
+      const paginatorCollector = paginatorMessage.createMessageComponentCollector({ filter, componentType: "BUTTON" });
 
-      paginatorCollector.on('collect', async (reaction, user) => {
-          switch(reaction.emoji.name) {
-            case '⬅️':
+      paginatorCollector.on('collect', async i => {
+          switch(i.customId) {
+            case 'paginator-left':
               index--;
               if (index < 0) index = embeds.length - 1;
               break;
-            case '➡️':
+            case 'paginator-right':
               index++;
               if (index > embeds.length - 1) index = 0;
               break;
           }
-          paginatorMessage.reactions.resolve(reaction).users.remove(user.id);
           paginatorMessage.edit({ embeds: [embeds[index]] });
         });
     });
