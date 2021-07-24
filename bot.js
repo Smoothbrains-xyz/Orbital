@@ -60,8 +60,6 @@ client.once('ready', () => {
       url: "https://github.com/ADawesomeguy/nasa-bot"
     }
   ]});
-
-  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
 });
 
 client.on('messageCreate', async message => {
