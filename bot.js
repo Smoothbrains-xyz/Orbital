@@ -60,14 +60,18 @@ client.once('ready', () => {
       url: "https://github.com/ADawesomeguy/nasa-bot"
     }
   ]});
+
+  client.guilds.cache.get('859278964556300289').commands.set(slashCommands);
 });
 
 client.on('messageCreate', async message => {
   if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
     // Register slash commands globally (set them every time you change slashcommands.json);
-    await client.application.commands.set(slashCommands);
-    message.delete();
-    message.author.send("Started updating slash commands...");
+    await client.application.commands.set(slashCommands)
+      .then(commands => {
+        message.delete();
+        message.author.send("Started updating slash commands...");
+      });
   }
 
   /*if (message.content.toLowerCase() === '!paginator') {
@@ -221,6 +225,9 @@ async function create(interaction) {
   switch(interaction.options.getSubCommand()) {
     case "thread":
       thread(interaction);
+      break;
+    case "emoji":
+      createEmoji(interaction);
       break;
   }
 }
@@ -781,6 +788,27 @@ async function marsWeather(interaction) {
           name: "file.jpg"
         }]
       });
+    });
+}
+
+async function createEmoji(interaction) {
+  interaction.defer();
+
+  const url = interaction.options.get("url").value;
+  const name = interaction.options.get("name").value;
+
+  let reason;
+  if (interaction.options.get("reason")) reason = interaction.options.get("reason").value;
+
+  interaction.guild.emojis.create(url, name, { reason: reason ? reason : "Not specified" })
+    .then(emoji => {
+      const emojiCreationEmbed = new Discord.MessageEmbed()
+        .setDescription(`Emoji "${emoji}" created with name \`${emoji.name}\``)
+        .setColor(embedInfo.color);
+      interaction.followUp({ embeds: [emojiCreationEmbed] });
+    })
+    .catch(error => {
+      if (error) interaction.followUp({ content: `Invalid image: likely the link does not point to an image or the image is too large/the wrong format.` });
     });
 }
 
