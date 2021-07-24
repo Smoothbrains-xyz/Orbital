@@ -29,6 +29,8 @@ const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
 
+const ownerarray = ['745063586422063214', '756289468285190294'];
+
 if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
     .then(() => {
@@ -63,9 +65,9 @@ client.once('ready', () => {
 client.on('messageCreate', async message => {
   if (message.content.toLowerCase() === '!deploy' && ownerarray.includes(message.author.id)) {
     // Register slash commands globally (set them every time you change slashcommands.json);
-    await client.application.commands.set(slashCommands)
-    message.channel.send("Started updating slash commands...")
-    console.log("Updating Slash Commands...")
+    await client.application.commands.set(slashCommands);
+    message.delete();
+    message.author.send("Started updating slash commands...");
   }
 
   /*if (message.content.toLowerCase() === '!paginator') {

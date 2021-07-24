@@ -1,5 +1,17 @@
 [
   {
+    "name": "help",
+    "description": "A utility command for help and a list of all available commands"
+  },
+  {
+    "name": "data",
+    "description": "Returns information for the Orbital bot, such as the server and shard count"
+  },
+  {
+    "name": "ping",
+    "description": "A utility command to show the client and API latency"
+  },
+  {
     "name": "news",
     "description": "Returns information regarding US News"
   },
@@ -78,18 +90,6 @@
         "description": "Lists the most recent git commits, their messages, and a link to the GitHub diff"
       }
     ]
-  },
-  {
-    "name": "help",
-    "description": "A utility command for help and a list of all available commands"
-  },
-  {
-    "name": "data",
-    "description": "Returns information for the Orbital bot, such as the server and shard count"
-  },
-  {
-    "name": "ping",
-    "description": "A utility command to show the client and API latency"
   },
   {
     "name": "wolfram",
