@@ -826,7 +826,7 @@ async function createSticker(interaction) {
   let reason;
   if (interaction.options.get("reason")) reason = interaction.options.get("reason").value;
 
-  interaction.guild.emojis.create(url, name, { reason: reason ? reason : "Not specified" })
+  interaction.guild.stickers.create(url, name, { reason: reason ? reason : "Not specified" })
     .then(sticker => {
       const stickerCreationEmbed = new Discord.MessageEmbed()
         .setDescription(`Sticker "${sticker}" created with name \`${sticker.name}\``)
