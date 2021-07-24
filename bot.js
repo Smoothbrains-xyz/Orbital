@@ -2,6 +2,8 @@
 *  TOKEN: Bot token
 *  NASA_API_KEY: NASA API Key
 *  CHROMIUM_PATH: Path to Chromium executable
+*  NEWS_API_KEY: API key for news
+*  MONGODB_URI: URI for MongoDB if needed
 */
 require('dotenv').config()
 
@@ -12,6 +14,7 @@ const client = new Discord.Client({
 });
 
 const axios = require('axios');
+const mongoose = require('mongoose');
 const wait = require('util').promisify(setTimeout);
 const parseString = require('xml2js').parseString;
 const gitlog = require("gitlog").default;
@@ -25,6 +28,14 @@ let embedInfo;
 const nasaApiKey = process.env.NASA_API_KEY;
 const token = process.env.TOKEN;
 const newsapi = process.env.NEWS_API_KEY;
+
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
+    .then(() => {
+      console.log("Connected to DB!");
+    })
+    .catch(console.error);
+}
 
 client.once('ready', () => {
   // Log bot tag to console on start

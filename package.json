@@ -23,6 +23,7 @@
     "discord.js": "^13.0.0-dev.02f55f0.1626782659",
     "dotenv": "^10.0.0",
     "gitlog": "^4.0.4",
+    "mongoose": "^5.13.3",
     "node-html-to-image": "^3.2.0",
     "xml2js": "^0.4.23"
   }
