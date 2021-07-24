@@ -794,6 +794,8 @@ async function marsWeather(interaction) {
 async function createEmoji(interaction) {
   interaction.defer();
 
+  if (!interaction.user.permissions.has("MANAGE_EMOJIS")) return interaction.followUp({ content: "You do not have the \"Manage Emojis\" permission!" });
+
   const url = interaction.options.get("url").value;
   const name = interaction.options.get("name").value;
 
