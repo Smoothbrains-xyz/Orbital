@@ -27,4 +27,4 @@ To create your own application and bot using the [Discord Developer Portal](http
 That's the most important part of your bot *and don't share it with anyone*.
 
 ## Credit
-The bot was made by [SmoothBrains Development](discord.gg/FMqNTgQPey) [Website](https://smoothbrains.xyz/). It is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.html).
+The bot was made by [SmoothBrains Development](discord.gg/FMqNTgQPey) - [Website](https://smoothbrains.xyz/). It is licensed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0.html).
