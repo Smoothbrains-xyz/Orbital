@@ -780,7 +780,8 @@ async function marsWeather(interaction) {
       const images = await nodeHtmlToImage({
         html: data,
         puppeteerArgs: {
-          executablePath: process.env.CHROMIUM_PATH
+          executablePath: process.env.CHROMIUM_PATH,
+          defaultViewport: {width: 1920, height: 1080}
         }
       });
       interaction.followUp({
