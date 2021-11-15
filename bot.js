@@ -9,7 +9,7 @@ require('dotenv').config()
 
 const Discord = require('discord.js');
 const client = new Discord.Client({
-  intents: ["GUILD_PRESENCES",  "GUILD_MEMBERS", "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS"],
+  intents: ["GUILD_PRESENCES", "GUILD_MEMBERS", "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS"],
   partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
 
@@ -53,13 +53,15 @@ client.once('ready', () => {
   }
 
   // Set presence
-  client.user.setPresence({ activities: [
-    {
-      name: "the night sky • /help",
-      type: "WATCHING",
-      url: "https://github.com/ADawesomeguy/nasa-bot"
-    }
-  ]});
+  client.user.setPresence({
+    activities: [
+      {
+        name: "the night sky • /help",
+        type: "WATCHING",
+        url: "https://github.com/ADawesomeguy/nasa-bot"
+      }
+    ]
+  });
 });
 
 client.on('messageCreate', async message => {
@@ -87,7 +89,7 @@ client.on("interactionCreate", interaction => {
 
   if (interaction.isCommand()) {
     // Switch between categories and uncategorized commands
-    switch(interaction.commandName) {
+    switch (interaction.commandName) {
       case "space":
         space(interaction);
         break;
@@ -120,7 +122,7 @@ client.on("interactionCreate", interaction => {
         break;
     } // End interaction command name switch
   } else if (interaction.isButton()) {
-    switch(interaction.customId) {
+    switch (interaction.customId) {
       case "another-natural":
         epic(interaction, false);
         break;
@@ -135,7 +137,7 @@ client.on("interactionCreate", interaction => {
 });
 
 async function qrcodeSwitch(interaction) {
-  switch(interaction.options.getSubCommand()) {
+  switch (interaction.options.getSubcommand()) {
     case "read":
       qrcode(true, interaction);
       break;
@@ -146,7 +148,7 @@ async function qrcodeSwitch(interaction) {
 }
 
 async function space(interaction) {
-  switch(interaction.options.getSubCommand()) {
+  switch (interaction.options.getSubcommand()) {
     case "apod":
       apod(interaction);
       break;
@@ -166,10 +168,10 @@ async function data(interaction) {
   const uptimeDays = client.uptime / 86400000;
   let serverCount;
   await client.shard.fetchClientValues('guilds.cache.size')
-	.then(results => {
-		serverCount = results.reduce((acc, guildCount) => acc + guildCount);
-	})
-	.catch(console.error);
+    .then(results => {
+      serverCount = results.reduce((acc, guildCount) => acc + guildCount);
+    })
+    .catch(console.error);
   const botInfoEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Orbital Info")
@@ -183,7 +185,7 @@ async function data(interaction) {
 }
 
 async function info(interaction) {
-  switch(interaction.options.getSubCommand()) {
+  switch (interaction.options.getSubcommand()) {
     case "server":
       serverInfo(interaction);
       break;
@@ -220,7 +222,7 @@ async function changelog(interaction) {
 }
 
 async function create(interaction) {
-  switch(interaction.options.getSubCommand()) {
+  switch (interaction.options.getSubcommand()) {
     case "thread":
       thread(interaction);
       break;
@@ -236,120 +238,120 @@ async function create(interaction) {
 async function news(interaction) {
   let customsearchvar = null;
   const row = new Discord.MessageActionRow()
-      .addComponents(
-          new Discord.MessageSelectMenu()
-              .setCustomId('select')
-              .setPlaceholder('Nothing selected')
-              .addOptions([
-                  {
-                      label: 'US News',
-                      description: 'View US News',
-                      value: 'us-news',
-                  },
-                  {
-                    label: 'Custom Search (PREMIUM)',
-                    description: 'Search a topic and find news articles about it',
-                    value: 'custom',
-                  },
-              ]),
-      );
+    .addComponents(
+      new Discord.MessageSelectMenu()
+        .setCustomId('select')
+        .setPlaceholder('Nothing selected')
+        .addOptions([
+          {
+            label: 'US News',
+            description: 'View US News',
+            value: 'us-news',
+          },
+          {
+            label: 'Custom Search (PREMIUM)',
+            description: 'Search a topic and find news articles about it',
+            value: 'custom',
+          },
+        ]),
+    );
 
   await interaction.reply({ content: 'News Options:', components: [row] });
-  }
+}
 
-  client.on('interactionCreate', async interaction => {
-      if (!interaction.isSelectMenu()) return;
-      if (interaction.customId === 'select') {
-          await interaction.update({ components: [] });
-          if (interaction.values[0] === "us-news") {
-          const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${newsapi}`
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isSelectMenu()) return;
+  if (interaction.customId === 'select') {
+    await interaction.update({ components: [] });
+    if (interaction.values[0] === "us-news") {
+      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${newsapi}`
+      const results = await axios.get(url)
+      const info = results.data.articles;
+      const random = Math.floor(Math.random() * info.length);
+      const randObject = info[random];
+      if (randObject.urlToImage === null || !randObject.urlToImage) {
+        const newsEmbed = new Discord.MessageEmbed()
+          .setTitle(`${randObject.title}`)
+          .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+          .setDescription(`**Description**: \n${randObject.description}`)
+          .addField("Country:", `United States of America`)
+          .addField(`URL:`, `[Link](${randObject.url})`, true)
+          .addField("Source:", `${randObject.source.name}`)
+          .setColor(`${embedInfo.color}`)
+          .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+          .setTimestamp();
+
+        await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
+      } else if (randObject.urlToImage) {
+        const newsEmbedMedia = new Discord.MessageEmbed()
+          .setTitle(`${randObject.title}`)
+          .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+          .setThumbnail(`${randObject.urlToImage}`)
+          .setDescription(`**Description**: \n${randObject.description}`)
+          .addField("Country:", `United States of America`)
+          .addField(`URL:`, `[Link](${randObject.url})`, true)
+          .addField("Source:", `${randObject.source.name}`)
+          .setColor(`${embedInfo.color}`)
+          .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+          .setTimestamp();
+
+        await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
+      }
+    } else if (interaction.values[0] === "custom" && guildidpremarray.includes(interaction.guild.id)) {
+      await interaction.editReply({ content: 'Type a topic to search for articles. *Time limit: 120 seconds*', components: [] });
+      const collector = interaction.channel.createMessageCollector({
+        max: '1',
+        maxMatches: '10',
+        time: '120000',
+        errors: ['time']
+      })
+      collector.on('collect', async (m) => {
+        if (typeof m.content === 'string') {
+          customsearchvar = m.content;
+          collector.stop;
+        }
+
+        if (typeof customsearchvar === 'string') {
+          const url = `https://newsapi.org/v2/everything?q=${customsearchvar}&apiKey=${newsapi}`
           const results = await axios.get(url)
           const info = results.data.articles;
           const random = Math.floor(Math.random() * info.length);
           const randObject = info[random];
-    if (randObject.urlToImage === null || !randObject.urlToImage) {
+          const newcustomsearchvar = customsearchvar.charAt(0).toUpperCase() + customsearchvar.slice(1);
+          if (randObject.urlToImage === null || !randObject.urlToImage) {
             const newsEmbed = new Discord.MessageEmbed()
-                    .setTitle(`${randObject.title}`)
-                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-                    .setDescription(`**Description**: \n${randObject.description}`)
-                    .addField("Country:", `United States of America`)
-                    .addField(`URL:`, `[Link](${randObject.url})`, true)
-                    .addField("Source:", `${randObject.source.name}`)
-                    .setColor(`${embedInfo.color}`)
-                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-                    .setTimestamp();
+              .setTitle(`${randObject.title}`)
+              .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+              .setDescription(`**Description**: \n${randObject.description}`)
+              .addField(`URL:`, `[Link](${randObject.url})`, true)
+              .addField("Source:", `${randObject.source.name}`)
+              .setColor(`${embedInfo.color}`)
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setTimestamp();
 
-                  await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbed] });
+            await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbed] });
           } else if (randObject.urlToImage) {
             const newsEmbedMedia = new Discord.MessageEmbed()
-                    .setTitle(`${randObject.title}`)
-                    .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-                    .setThumbnail(`${randObject.urlToImage}`)
-                    .setDescription(`**Description**: \n${randObject.description}`)
-                    .addField("Country:", `United States of America`)
-                    .addField(`URL:`, `[Link](${randObject.url})`, true)
-                    .addField("Source:", `${randObject.source.name}`)
-                    .setColor(`${embedInfo.color}`)
-                    .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-                    .setTimestamp();
+              .setTitle(`${randObject.title}`)
+              .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
+              .setThumbnail(`${randObject.urlToImage}`)
+              .setDescription(`**Description**: \n${randObject.description}`)
+              .addField(`URL:`, `[Link](${randObject.url})`, true)
+              .addField("Source:", `${randObject.source.name}`)
+              .setColor(`${embedInfo.color}`)
+              .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+              .setTimestamp();
 
-                    await interaction.editReply({ content: 'US News:', components: [], embeds: [newsEmbedMedia] });
-        }
-        } else if (interaction.values[0] === "custom" && guildidpremarray.includes(interaction.guild.id)) {
-          await interaction.editReply({ content: 'Type a topic to search for articles. *Time limit: 120 seconds*', components: [] });
-            const collector = interaction.channel.createMessageCollector({
-            max: '1',
-            maxMatches: '10',
-            time: '120000',
-            errors: ['time']
-          })
-          collector.on('collect', async (m) => {
-            if (typeof m.content === 'string') {
-              customsearchvar = m.content;
-              collector.stop;
-            }
-
-          if (typeof customsearchvar === 'string') {
-            const url = `https://newsapi.org/v2/everything?q=${customsearchvar}&apiKey=${newsapi}`
-            const results = await axios.get(url)
-            const info = results.data.articles;
-            const random = Math.floor(Math.random() * info.length);
-            const randObject = info[random];
-            const newcustomsearchvar = customsearchvar.charAt(0).toUpperCase() + customsearchvar.slice(1);
-      if (randObject.urlToImage === null || !randObject.urlToImage) {
-              const newsEmbed = new Discord.MessageEmbed()
-                      .setTitle(`${randObject.title}`)
-                      .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-                      .setDescription(`**Description**: \n${randObject.description}`)
-                      .addField(`URL:`, `[Link](${randObject.url})`, true)
-                      .addField("Source:", `${randObject.source.name}`)
-                      .setColor(`${embedInfo.color}`)
-                      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-                      .setTimestamp();
-
-                    await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbed] });
-            } else if (randObject.urlToImage) {
-              const newsEmbedMedia = new Discord.MessageEmbed()
-                      .setTitle(`${randObject.title}`)
-                      .setAuthor(`${randObject.author}`, `${client.user.displayAvatarURL({ dynamic: true, size: 1024 })}`)
-                      .setThumbnail(`${randObject.urlToImage}`)
-                      .setDescription(`**Description**: \n${randObject.description}`)
-                      .addField(`URL:`, `[Link](${randObject.url})`, true)
-                      .addField("Source:", `${randObject.source.name}`)
-                      .setColor(`${embedInfo.color}`)
-                      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-                      .setTimestamp();
-
-                      //interaction.user.id is interaction author
-                      await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbedMedia] });
-        }
+            //interaction.user.id is interaction author
+            await interaction.followUp({ content: `${newcustomsearchvar} News Articles:`, components: [], embeds: [newsEmbedMedia] });
+          }
         }
       })
-      } else if(!guildidpremarray.includes(interaction.guild.id)) {
-        return await interaction.editReply({ content: 'Oops, seems like you do not have premium...', components: [] });
-      }
+    } else if (!guildidpremarray.includes(interaction.guild.id)) {
+      return await interaction.editReply({ content: 'Oops, seems like you do not have premium...', components: [] });
     }
-  });
+  }
+});
 
 async function apod(interaction) {
   axios.get(`${urls.apod}${nasaApiKey}`)
@@ -366,9 +368,9 @@ async function apod(interaction) {
         .setColor(`${embedInfo.color}`)
         .setTimestamp();
 
-      interaction.reply({ embeds: [apodEmbed]})
+      interaction.reply({ embeds: [apodEmbed] })
         .then(console.log)
-	      .catch(console.error);
+        .catch(console.error);
     })
     .catch(console.error);
 }
@@ -397,84 +399,84 @@ async function iss(interaction) {
 }
 
 async function help(interaction) {
-      const embeds = [];
-      slashCommands.forEach(async slashCommand => {
-        const helpEmbed = new Discord.MessageEmbed()
-          .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
-          .setColor("ffffff")
-          .setFooter(embedInfo.footer[0], embedInfo.footer[1])
-          .setTimestamp();
-        let commandInfo = `${slashCommand.description}`;
-        if (slashCommand.options) {
-          commandInfo += `\nOptions:`
-          slashCommand.options.forEach(option => {
-            const name = option.name;
-            const description = option.description;
-            let type;
-            switch (option.type) {
-              case 1:
-                type = "Subcommand";
-                break;
-              case 2:
-                type = "Subcommand Group";
-                break;
-              case 3:
-                type = "String";
-                break;
-              case 4:
-                type = "Integer";
-                break;
-              case 5:
-                type = "Boolean";
-                break;
-              case 6:
-                type = "User";
-                break;
-              case 7:
-                type = "Channel";
-                break;
-              case 8:
-                type = "Role";
-                break;
-              case 9:
-                type = "Mentionable";
-                break;
-            }
-            commandInfo += `\n> Type: \`${type}\`\n> Name: \`${name}\`\n> Description: \`${description}\`\n`;
-            if (option.options) {
-              option.options.forEach(suboption => {
-                //commandInfo += `\n${suboption.type}\n${suboption.name}\n${suboption.description}`
-              });
-            }
+  const embeds = [];
+  slashCommands.forEach(async slashCommand => {
+    const helpEmbed = new Discord.MessageEmbed()
+      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
+      .setColor("ffffff")
+      .setFooter(embedInfo.footer[0], embedInfo.footer[1])
+      .setTimestamp();
+    let commandInfo = `${slashCommand.description}`;
+    if (slashCommand.options) {
+      commandInfo += `\nOptions:`
+      slashCommand.options.forEach(option => {
+        const name = option.name;
+        const description = option.description;
+        let type;
+        switch (option.type) {
+          case 1:
+            type = "Subcommand";
+            break;
+          case 2:
+            type = "Subcommand Group";
+            break;
+          case 3:
+            type = "String";
+            break;
+          case 4:
+            type = "Integer";
+            break;
+          case 5:
+            type = "Boolean";
+            break;
+          case 6:
+            type = "User";
+            break;
+          case 7:
+            type = "Channel";
+            break;
+          case 8:
+            type = "Role";
+            break;
+          case 9:
+            type = "Mentionable";
+            break;
+        }
+        commandInfo += `\n> Type: \`${type}\`\n> Name: \`${name}\`\n> Description: \`${description}\`\n`;
+        if (option.options) {
+          option.options.forEach(suboption => {
+            //commandInfo += `\n${suboption.type}\n${suboption.name}\n${suboption.description}`
           });
         }
-
-        helpEmbed.addField("/" + slashCommand.name, `${commandInfo}`);
-        embeds.push(helpEmbed);
       });
-      paginator(interaction.user, interaction, embeds);
-      //interaction.reply({ embeds: [helpEmbed] });
+    }
+
+    helpEmbed.addField("/" + slashCommand.name, `${commandInfo}`);
+    embeds.push(helpEmbed);
+  });
+  paginator(interaction.user, interaction, embeds);
+  //interaction.reply({ embeds: [helpEmbed] });
 }
 
 async function thread(interaction) {
   if (interaction.member.permissions.has("MANAGE_CHANNELS")) {
-  const name = interaction.options.get("thread").options.get("name").value
-  const reason = interaction.options.get("thread").options.get("reason").value
-  const author = `<@${interaction.member.user.id}>`
-  const chan = await interaction.channel.threads.create({name: name, autoArchiveDuration: 1440, reason: reason,}).catch(console.error)
-  chan.members.add(interaction.member, "Created Thread")
+    const name = interaction.options.get("thread").options.get("name").value
+    const reason = interaction.options.get("thread").options.get("reason").value
+    const author = `<@${interaction.member.user.id}>`
+    const chan = await interaction.channel.threads.create({ name: name, autoArchiveDuration: 1440, reason: reason, }).catch(console.error)
+    chan.members.add(interaction.member, "Created Thread")
 
-  const threadEmbed = new Discord.MessageEmbed()
-    .setTitle("Thread Creation Status")
-    .setDescription(`Successfully created Thread: __**${name}**__ by ${author}\n\nReason for thread creation: ${reason}\n\nThread will auto archive after no activity in 24 Hours`)
-    .setColor(`${embedInfo.color}`)
-    .setFooter(`This message will be autodeleted in 30 seconds ${embedInfo.footer[0]}`, embedInfo.footer[1])
-    .setTimestamp();
+    const threadEmbed = new Discord.MessageEmbed()
+      .setTitle("Thread Creation Status")
+      .setDescription(`Successfully created Thread: __**${name}**__ by ${author}\n\nReason for thread creation: ${reason}\n\nThread will auto archive after no activity in 24 Hours`)
+      .setColor(`${embedInfo.color}`)
+      .setFooter(`This message will be autodeleted in 30 seconds ${embedInfo.footer[0]}`, embedInfo.footer[1])
+      .setTimestamp();
 
-  interaction.reply({ embeds: [threadEmbed] });
-  await wait(30000) //Waits for 30 seconds
-  interaction.deleteReply()
-  .catch(console.error);
+    interaction.reply({ embeds: [threadEmbed] });
+    await wait(30000) //Waits for 30 seconds
+    interaction.deleteReply()
+      .catch(console.error);
   } else {
     return interaction.reply("You do not have access to thread creation. Please make sure you have MANAGE_CHANNELS Permission");
   }
@@ -526,7 +528,7 @@ async function epic(interaction, isEnhanced) {
             interaction.followUp({ embeds: [epicNaturalEmbed], components: [new Discord.MessageActionRow().addComponents(anotherButton)] });
           });
       });
-  // If "enhanced" is true
+    // If "enhanced" is true
   } else if (isEnhanced) {
     axios.get(`${urls.epic_enhanced_date}${nasaApiKey}`)
       .then(response => {
@@ -584,7 +586,7 @@ async function serverInfo(interaction) {
     .addField("Channels", `Total: ${guild.channels.cache.size} ‖ Announcement: ${announcementChannelCount} • Text: ${textChannelCount} • Voice: ${voiceChannelCount} • Categories: ${categoryChannelCount}`)
     .addField("Members", `Total: ${numHumans + numBots} ‖ Human: ${numHumans} • Bot: ${numBots}`)
     .addField("Roles", `${numRoles}`)
-    .addField("Created", `<t:${Math.round(guild.createdTimestamp/1000)}:R>`)
+    .addField("Created", `<t:${Math.round(guild.createdTimestamp / 1000)}:R>`)
     //.addField("User Statuses", `🟦 • ${numOnline} online\n\n🟧 • ${numAway} away\n\n⬛ • ${numOffline} offline\n\n🟥 • ${numDND} DND`)
     .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
@@ -602,8 +604,8 @@ async function memberInfo(interaction) {
     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .addField("Roles", member.roles.cache.map(r => `${r}`).join(' • '))
     .addField("Permissions", member.permissions.toArray().map(p => `\`${p}\``.toLowerCase()).join(' • '))
-    .addField("Joined", `<t:${Math.round(member.joinedTimestamp/1000)}:R>`, true)
-    .addField("Account created", `<t:${Math.round(member.user.createdTimestamp/1000)}:R>`, true)
+    .addField("Joined", `<t:${Math.round(member.joinedTimestamp / 1000)}:R>`, true)
+    .addField("Account created", `<t:${Math.round(member.user.createdTimestamp / 1000)}:R>`, true)
     .setFooter(embedInfo.footer[0], embedInfo.footer[1])
     .setColor(`${embedInfo.color}`)
     .setTimestamp();
@@ -630,61 +632,61 @@ async function wolfram(interaction) {
   interaction.defer();
   await axios.get(`http://api.wolframalpha.com/v2/query?input=${interaction.options.get('query').value}&appid=${process.env.WOLFRAM_API_KEY}`)
     .then(async response => {
-        data = response.data;
-        parseString(data, async (err, result) => {
-          if (result.queryresult.pod) {
-            const wolframEmbed = new Discord.MessageEmbed()
-              .setTitle(`Results for \`${interaction.options.get('query').value}\``)
-              .setColor(embedInfo.color);
+      data = response.data;
+      parseString(data, async (err, result) => {
+        if (result.queryresult.pod) {
+          const wolframEmbed = new Discord.MessageEmbed()
+            .setTitle(`Results for \`${interaction.options.get('query').value}\``)
+            .setColor(embedInfo.color);
 
-            const menuOptions = [];
+          const menuOptions = [];
+          result.queryresult.pod.forEach(p => {
+            menuOptions.push({
+              label: p.$.title.length >= 25 ? p.$.title.slice(0, 21) + "..." : p.$.title,
+              value: p.$.title
+            });
+          });
+
+          const selectMenu = new Discord.MessageSelectMenu()
+            .setCustomId('wolfram-results')
+            .setPlaceholder('Results')
+            .addOptions(menuOptions)
+
+          const interactionMessage = await interaction.followUp({ content: "Results:", components: [new Discord.MessageActionRow().addComponents(selectMenu)] });
+
+          const filter = i => {
+            i.deferUpdate();
+            return i.user.id === interactionMessage.interaction.user.id;
+          };
+
+          const collector = interactionMessage.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU' });
+
+          collector.on('collect', async i => {
             result.queryresult.pod.forEach(p => {
-              menuOptions.push({
-                label: p.$.title.length >= 25 ? p.$.title.slice(0, 21) + "..." : p.$.title,
-                value: p.$.title
-              });
+              if (p.$.title === i.values[0]) {
+                const embeds = [];
+                p.subpod.forEach(s => {
+                  const embed = new Discord.MessageEmbed()
+                    .setTitle(i.values['0'])
+                    .setImage(s.img[0].$.src)
+                    .setColor(embedInfo.color);
+                  embeds.push(embed);
+                });
+                i.message.reply({ embeds: embeds });
+              }
             });
-
-            const selectMenu = new Discord.MessageSelectMenu()
-              .setCustomId('wolfram-results')
-              .setPlaceholder('Results')
-              .addOptions(menuOptions)
-
-            const interactionMessage = await interaction.followUp({ content: "Results:", components: [new Discord.MessageActionRow().addComponents(selectMenu)] });
-
-            const filter = i => {
-            	i.deferUpdate();
-            	return i.user.id === interactionMessage.interaction.user.id;
-            };
-
-            const collector = interactionMessage.createMessageComponentCollector({ filter, componentType: 'SELECT_MENU' });
-
-            collector.on('collect', async i => {
-              result.queryresult.pod.forEach(p => {
-                if (p.$.title === i.values[0]) {
-                  const embeds = [];
-                  p.subpod.forEach(s => {
-                    const embed = new Discord.MessageEmbed()
-                      .setTitle(i.values['0'])
-                      .setImage(s.img[0].$.src)
-                      .setColor(embedInfo.color);
-                    embeds.push(embed);
-                  });
-                  i.message.reply({ embeds: embeds });
-                }
-              });
-            });
-          } else {
-            interaction.followUp("No results!")
-          }
-        });
+          });
+        } else {
+          interaction.followUp("No results!")
+        }
+      });
     })
     .catch(console.error)
 }
 
 async function qrcode(isRead, interaction) {
   interaction.defer();
-  const qrcodeData = interaction.options.getSubCommand() === 'create' ? interaction.options.get('data').value : interaction.options.get('url').value;
+  const qrcodeData = interaction.options.getSubcommand() === 'create' ? interaction.options.get('data').value : interaction.options.get('url').value;
   let qrcodeURL;
   isRead ? qrcodeURL = urls.qrcode_read : qrcodeURL = urls.qrcode_create;
 
@@ -692,7 +694,7 @@ async function qrcode(isRead, interaction) {
     await axios.get(`${qrcodeURL}${qrcodeData}`)
       .then(response => {
         data = response.data;
-        if (data[0].symbol[0].error){
+        if (data[0].symbol[0].error) {
           interaction.followUp({ content: data[0].symbol[0].error.charAt(0).toUpperCase() + data[0].symbol[0].error.slice(1) });
         } else {
           interaction.followUp({ content: data[0].symbol[0].data });
@@ -746,7 +748,7 @@ async function remind(interaction) {
   }
 
   const totalSeconds = interaction.options.get('amount').value * multiplier;
-  const finalDate = Math.round(Date.now()/1000 + totalSeconds);
+  const finalDate = Math.round(Date.now() / 1000 + totalSeconds);
   const reminderOverviewEmbed = new Discord.MessageEmbed()
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setTitle("Reminder Created")
@@ -781,7 +783,7 @@ async function marsWeather(interaction) {
         html: data,
         puppeteerArgs: {
           executablePath: process.env.CHROMIUM_PATH,
-          defaultViewport: {width: 1920, height: 1080}
+          defaultViewport: { width: 1920, height: 1080 }
         }
       });
       interaction.followUp({
@@ -865,18 +867,18 @@ async function paginator(user, interaction, embeds) {
       const paginatorCollector = paginatorMessage.createMessageComponentCollector({ filter, componentType: "BUTTON" });
 
       paginatorCollector.on('collect', async i => {
-          switch(i.customId) {
-            case 'paginator-left':
-              index--;
-              if (index < 0) index = embeds.length - 1;
-              break;
-            case 'paginator-right':
-              index++;
-              if (index > embeds.length - 1) index = 0;
-              break;
-          }
-          paginatorMessage.edit({ content: `Page ${index + 1} of ${embeds.length}:`, embeds: [embeds[index]] });
-        });
+        switch (i.customId) {
+          case 'paginator-left':
+            index--;
+            if (index < 0) index = embeds.length - 1;
+            break;
+          case 'paginator-right':
+            index++;
+            if (index > embeds.length - 1) index = 0;
+            break;
+        }
+        paginatorMessage.edit({ content: `Page ${index + 1} of ${embeds.length}:`, embeds: [embeds[index]] });
+      });
     });
 }
 
